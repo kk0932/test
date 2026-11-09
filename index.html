@@ -1,0 +1,3503 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中華電信網路輿情戰情儀表板</title>
+    <style>
+        :root, [data-theme="dark"] {
+            --bg-base: #0b0f19; --bg-surface: #151e32; --bg-card: #1a243d; --bg-card-hover: #223052;
+            --border-subtle: #263554; --border-focus: #38bdf8;
+            --text-main: #f1f5f9; --text-muted: #94a3b8; --text-dim: #64748b;
+            --primary: #0284c7; --primary-light: #38bdf8;
+            --btn-text: #ffffff;
+            --title-color: #ffffff;
+            --alert-color: #fca5a5;
+            --info-color: #38bdf8;
+            --pos-green: #22c55e; --pos-bg: rgba(34, 197, 94, 0.12);
+            --neg-red: #ef4444; --neg-bg: rgba(239, 68, 68, 0.12);
+            --svg-bg: #0f172a; --svg-grid: #334155; --svg-subtle: #1e293b;
+            --svg-text: #cbd5e1; --svg-text-dim: #94a3b8; --svg-text-strong: #f1f5f9;
+            --tooltip-bg: rgba(15, 23, 42, 0.96); --tooltip-text: #f1f5f9;
+            --badge-bg: #0f172a; --badge-border: #334155;
+            --guide-bg: rgba(2, 132, 199, 0.1);
+            --input-bg: #0f172a; --input-border: #334155; --input-text: #ffffff;
+            --matrix-adv-bg: #0f172a; --matrix-adv-border: #334155;
+            --table-head-bg: #151e32;
+            --hover-bg: rgba(56, 189, 248, 0.08);
+            --active-bg: rgba(2, 132, 199, 0.2);
+            --btn-sec-bg: #1e293b; --btn-sec-border: var(--border-subtle); --btn-sec-text: var(--text-main);
+            --matrix-title-color: #f1f5f9;
+            --matrix-desc-color: #94a3b8;
+            --quad-text-color: #94a3b8;
+            --median-badge-bg: #1e293b;
+            --median-badge-border: #64748b;
+            --median-badge-text: #38bdf8;
+            --dot-label-stroke: #0f172a;
+            --dot-label-text: #f1f5f9;
+            --matrix-rect-green: rgba(34, 197, 94, 0.035);
+            --matrix-rect-red: rgba(239, 68, 68, 0.035);
+            --matrix-rect-gray: rgba(148, 163, 184, 0.025);
+            --matrix-rect-blue: rgba(56, 189, 248, 0.035);
+        }
+        [data-theme="light"] {
+            --bg-base: #f1f5f9; --bg-surface: #ffffff; --bg-card: #f8fafc; --bg-card-hover: #e2e8f0;
+            --border-subtle: #cbd5e1; --border-focus: #0284c7;
+            --text-main: #0f172a; --text-muted: #334155; --text-dim: #64748b;
+            --primary: #0284c7; --primary-light: #0369a1;
+            --btn-text: #ffffff;
+            --title-color: #1e293b;
+            --alert-color: #dc2626;
+            --info-color: #0369a1;
+            --pos-green: #16a34a; --pos-bg: rgba(22, 163, 74, 0.12);
+            --neg-red: #dc2626; --neg-bg: rgba(220, 38, 38, 0.12);
+            --svg-bg: #ffffff; --svg-grid: #e2e8f0; --svg-subtle: #f1f5f9;
+            --svg-text: #334155; --svg-text-dim: #475569; --svg-text-strong: #0f172a;
+            --tooltip-bg: rgba(255, 255, 255, 0.98); --tooltip-text: #0f172a;
+            --badge-bg: #f8fafc; --badge-border: #cbd5e1;
+            --guide-bg: rgba(2, 132, 199, 0.06);
+            --input-bg: #ffffff; --input-border: #cbd5e1; --input-text: #0f172a;
+            --matrix-adv-bg: #f8fafc; --matrix-adv-border: #cbd5e1;
+            --table-head-bg: #f8fafc;
+            --hover-bg: rgba(2, 132, 199, 0.05);
+            --active-bg: rgba(2, 132, 199, 0.12);
+            --btn-sec-bg: #ffffff; --btn-sec-border: #cbd5e1; --btn-sec-text: #334155;
+            --matrix-title-color: #1e293b;
+            --matrix-desc-color: #334155;
+            --quad-text-color: #475569;
+            --median-badge-bg: #ffffff;
+            --median-badge-border: #64748b;
+            --median-badge-text: #1e293b;
+            --dot-label-stroke: #ffffff;
+            --dot-label-text: #0f172a;
+            --matrix-rect-green: rgba(16, 185, 129, 0.10);
+            --matrix-rect-red: rgba(239, 68, 68, 0.08);
+            --matrix-rect-gray: rgba(148, 163, 184, 0.06);
+            --matrix-rect-blue: rgba(56, 189, 248, 0.08);
+        }
+        /* 四大治理區塊樣式 */
+        .gov-category { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
+        .gov-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 6px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 2px; }
+        .gov-title { font-size: 1.05rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px; }
+        .gov-badge { font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; background: var(--bg-card); color: var(--text-muted); font-weight: 600; border: 1px solid var(--border-subtle); }
+        .theme-toggle-btn { background: var(--bg-card); border: 1px solid var(--border-subtle); color: var(--text-main); padding: 6px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .theme-toggle-btn:hover { border-color: var(--primary-light); color: var(--primary-light); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        body { background-color: var(--bg-base); color: var(--text-main); min-height: 100vh; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+
+        .header-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; background: var(--bg-surface); padding: 16px 20px; border-radius: 12px; border: 1px solid var(--border-subtle); }
+        .brand-title { display: flex; align-items: center; gap: 12px; }
+        .brand-badge { background: linear-gradient(135deg, #0284c7, #0369a1); color: var(--btn-text); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .main-title { font-size: 1.35rem; font-weight: 700; color: var(--title-color); }
+
+        .controls-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+        .ctrl-group { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); background: var(--bg-card); padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-subtle); }
+        .input-control { background: var(--input-bg); border: 1px solid var(--input-border); color: var(--input-text); padding: 5px 8px; border-radius: 6px; outline: none; }
+        .input-search { width: 220px; }
+
+        .btn-primary { background: linear-gradient(135deg, #0284c7, #0ea5e9); border: none; color: var(--btn-text); padding: 7px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-secondary { background: var(--btn-sec-bg); border: 1px solid var(--btn-sec-border); color: var(--btn-sec-text); padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .btn-secondary:hover { border-color: var(--primary-light); color: var(--primary-light); }
+        .btn-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--neg-red); color: var(--alert-color); padding: 7px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .tabs-nav { display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--border-subtle); padding-bottom: 8px; }
+        .tab-btn { background: transparent; border: none; color: var(--text-muted); padding: 10px 20px; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; }
+        .tab-btn.active { color: var(--title-color); background: var(--primary); }
+        .tab-extra { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); }
+
+        .kpi-section { display: flex; flex-direction: column; gap: 10px; }
+        .section-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+        .section-title { font-size: 0.95rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .card { background: var(--bg-surface); border: 2px solid transparent; border-left: 6px solid transparent; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease; }
+        .card.selected { border-color: var(--primary-light); border-left: 6px solid var(--primary-light); background: var(--active-bg); box-shadow: 0 4px 16px rgba(2, 132, 199, 0.2); }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .card-title { font-size: 1.05rem; font-weight: 700; color: var(--title-color); }
+        .card-body { display: flex; justify-content: space-between; align-items: flex-end; padding-top: 4px; }
+        .pn-label { font-size: 0.75rem; color: var(--text-dim); font-weight: 600; text-transform: uppercase; }
+        .pn-value { font-size: 2.2rem; font-weight: 800; font-family: monospace; line-height: 1; }
+        .pn-pos { color: var(--pos-green); } .pn-neg { color: var(--neg-red); } .pn-state { font-size: 1.05rem; color: var(--text-muted); }
+        .pn-diff { font-size: 0.8rem; font-weight: 600; margin-top: 4px; }
+
+        .vol-box { display: flex; flex-direction: column; gap: 4px; text-align: right; font-size: 0.85rem; font-weight: 600; }
+        .pop-stats { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-subtle); display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); }
+
+        .chart-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+        .svg-container { width: 100%; height: 260px; position: relative; }
+        .chart-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+        .chart-axis-line { stroke: #1e293b; stroke-width: 1; stroke-dasharray: 4, 4; }
+        .chart-tick-text { fill: var(--text-dim); font-size: 11px; font-family: monospace; }
+        .chart-point { cursor: pointer; transition: r 0.15s ease, stroke-width 0.15s ease; outline: none; }
+        .chart-point:hover, .chart-point:focus { r: 7px !important; stroke: #ffffff !important; stroke-width: 2px !important; }
+        
+        .tables-section { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .table-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+        .modern-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left; }
+        .modern-table th { color: var(--text-dim); font-weight: 600; padding: 8px 10px; border-bottom: 1px solid var(--border-subtle); }
+        .modern-table td { padding: 10px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: top; }
+        .summary-text { color: var(--text-main); font-size: 0.84rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        /* Matrix Module Specific Styles */
+        .matrix-guide-bar { background: var(--guide-bg); border: 1px solid var(--border-subtle); border-left: 4px solid var(--primary-light); padding: 10px 14px; border-radius: 6px; font-size: 0.84rem; color: var(--matrix-title-color); display: flex; flex-direction: column; gap: 6px; }
+        .matrix-guide-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .matrix-guide-details { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 10px 14px; font-size: 0.8rem; color: var(--matrix-desc-color); line-height: 1.6; display: none; margin-top: 4px; }
+        .matrix-adv-panel { display: none; flex-wrap: wrap; gap: 12px; align-items: center; background: var(--input-bg); padding: 8px 14px; border-radius: 8px; border: 1px dashed var(--border-subtle); font-size: 0.82rem; color: var(--text-muted); }
+        .matrix-focus-bar { display: none; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: rgba(56, 189, 248, 0.14); border: 1px solid var(--primary-light); padding: 10px 16px; border-radius: 8px; font-size: 0.85rem; }
+        .matrix-point-group { cursor: pointer; outline: none; }
+        .matrix-point-group:hover circle.main-dot, .matrix-point-group:focus circle.main-dot { stroke: #ffffff !important; stroke-width: 2.5px !important; filter: brightness(1.2); }
+        .matrix-row { cursor: pointer; transition: background 0.15s ease; }
+        .matrix-row:hover { background: var(--hover-bg); }
+        .matrix-row.active-row { background: var(--active-bg) !important; font-weight: 700; border-left: 3px solid var(--primary-light); }
+        .badge-num { display: inline-block; min-width: 24px; text-align: center; padding: 1px 5px; border-radius: 4px; background: var(--input-bg); border: 1px solid var(--border-subtle); color: var(--primary-light); font-family: monospace; font-weight: 700; font-size: 0.78rem; }
+
+        .status-footer { display: flex; flex-direction: column; gap: 4px; font-size: 0.78rem; color: var(--text-dim); padding: 8px 4px; }
+        .empty-state { text-align: center; padding: 40px; color: var(--text-dim); font-size: 0.9rem; }
+    
+        </style>
+</head>
+<body>
+
+    <header class="header-bar">
+        <div class="brand-title">
+            <span class="brand-badge">AI 輿情</span>
+            <h1 class="main-title">戰情儀表板</h1>
+        </div>
+
+        <div class="controls-row">
+                        <div class="ctrl-group" style="border: 1px solid var(--primary); background: var(--active-bg);">
+                <label for="dashboardModeSelect" style="font-weight:700; color:var(--text-main);">模式：</label>
+                <select id="dashboardModeSelect" class="input-control" onchange="DashboardModeManager.setMode(this.value)" style="font-weight:600;">
+                    <option value="full">全功能分析 (預設)</option>
+                    <option value="overview">戰情晨會總覽</option>
+                    <option value="risk">風險監控專案</option>
+                    <option value="exploration">議題深度探索</option>
+                </select>
+            </div>
+            <div class="ctrl-group">
+                <label for="fileIn">載入資料</label>
+                <input type="file" id="fileIn" accept=".json" class="input-control" style="max-width: 180px;">
+            </div>
+            <button type="button" class="btn-danger" id="btnClearData" onclick="clearData()" disabled>清除已載入資料</button>
+            <div class="ctrl-group">
+                <label>分析期間(本期)</label>
+                <input type="date" id="dateStart" class="input-control">
+                <span>~</span>
+                <input type="date" id="dateEnd" class="input-control">
+            </div>
+            <div class="ctrl-group">
+                <label for="keywordInput">議題探勘</label>
+                <input type="text" id="keywordInput" class="input-dark input-search" placeholder="輸入關鍵字">
+                <button type="button" onclick="clearKeyword()" style="background:none;border:none;color:var(--text-dim);cursor:pointer;">✕</button>
+            </div>
+            <button type="button" class="btn-primary" onclick="applyFiltersAndRender()">套用篩選</button>
+            <button type="button" class="btn-primary" id="btnCopyReport" onclick="copyExecutiveSummary()" style="background: linear-gradient(135deg, #10b981, #059669);">📋 戰情摘要</button>
+            <button type="button" class="theme-toggle-btn" id="btnThemeToggle" onclick="ThemeManager.toggle()">🌗 淺色模式</button>
+            <div style="position: relative;">
+                <button type="button" class="btn-secondary" onclick="DashboardModeManager.togglePanel()">👁️ 顯示區塊設定</button>
+                <div id="blockSettingsPanel" style="display:none; position:absolute; top:40px; right:0; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:8px; padding:16px; width:300px; z-index:100; box-shadow:0 8px 24px rgba(0,0,0,0.5);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <div style="font-weight:800; color:var(--title-color); font-size:1.05rem;">顯示區塊</div>
+                        <button type="button" class="btn-secondary" style="padding:4px 10px; font-size:0.8rem;" onclick="DashboardModeManager.togglePanel()">✕ 關閉</button>
+                    </div>
+                    <div style="margin-bottom:14px; font-size:0.85rem; color:var(--text-muted); display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+                        <span>模式：<strong id="panelModeLabel" style="color:var(--primary-light);">全功能分析</strong></span>
+                        <span id="dashboardModeStatusText"></span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:18px; font-size:0.9rem;">
+                        <label style="display:flex; align-items:center; gap:6px; cursor:not-allowed; opacity:0.6; white-space:nowrap;"><input type="checkbox" checked disabled> 品牌KPI卡 (固定)</label>
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;"><input type="checkbox" id="chk_block_channelSection" onchange="DashboardModeManager.toggleBlock('channelSection', this.checked)"> 通路聲量分佈</label>
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;"><input type="checkbox" id="chk_block_radarSection" onchange="DashboardModeManager.toggleBlock('radarSection', this.checked)"> 品牌負評增加雷達</label>
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;"><input type="checkbox" id="chk_block_churnCandidateSection" onchange="DashboardModeManager.toggleBlock('churnCandidateSection', this.checked)"> 解約／申訴候選</label>
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;"><input type="checkbox" id="chk_block_longTailSection" onchange="DashboardModeManager.toggleBlock('longTailSection', this.checked)"> 長尾風險追蹤</label>
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;"><input type="checkbox" id="chk_block_matrixSection" onchange="DashboardModeManager.toggleBlock('matrixSection', this.checked)"> 議題聲量與正向占比矩陣</label>
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;"><input type="checkbox" id="chk_block_drilldownSection" onchange="DashboardModeManager.toggleBlock('drilldownSection', this.checked)"> 每日情緒聲量趨勢</label>
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;"><input type="checkbox" id="chk_block_top10PosCard" onchange="DashboardModeManager.toggleBlock('top10PosCard', this.checked)"> 正向 Top 10</label>
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;"><input type="checkbox" id="chk_block_top10NegCard" onchange="DashboardModeManager.toggleBlock('top10NegCard', this.checked)"> 負向 Top 10</label>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                        <button type="button" class="btn-secondary" style="padding:6px 12px; font-size:0.85rem; width:100%; white-space:normal; line-height:1.4;" onclick="DashboardModeManager.resetToPreset()">↻ 還原此模式的區塊配置</button>
+                        <div style="font-size:0.75rem; color:var(--text-dim); text-align:center;">(僅還原上方勾選項目)</div>
+                    </div>
+                    <details style="margin-top:14px; border-top:1px dashed var(--border-subtle); padding-top:12px;">
+                        <summary style="font-size:0.85rem; color:var(--text-muted); cursor:pointer; font-weight:600; outline:none;">⚙️ 進階設定</summary>
+                        <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+                            <div style="font-size:0.75rem; color:var(--text-dim); line-height:1.4;">重設將清除主題、模式與配置偏好，但不會刪除分析資料。</div>
+                            <button type="button" class="btn-secondary" style="padding:6px 12px; font-size:0.8rem; border-color:var(--neg-red); color:var(--alert-color); white-space:normal; line-height:1.4;" onclick="PreferenceManager.reset()">⚠️ 重設所有介面偏好</button>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <nav class="tabs-nav">
+        <button class="tab-btn active" id="tab-mobile" onclick="switchTab('mobile')">行動通訊</button>
+        <button class="tab-btn" id="tab-broadband" onclick="switchTab('broadband')">數據寬頻</button>
+        <button class="tab-btn" id="tab-media" onclick="switchTab('media')">MOD 影視</button>
+        <div class="tab-extra" id="mediaExtra" style="display: none;">
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                <input type="checkbox" id="chkGlobalOtt" onchange="applyFiltersAndRender()"> 包含國際/其他OTT平台
+            </label>
+        </div>
+    </nav>
+    <!-- 全域隱藏矩陣時的聚焦提示條 -->
+    <div class="matrix-focus-bar" id="globalFocusBanner" style="display:none; margin-top:10px;">
+        <div>
+            <div style="color:var(--primary-light); font-weight:700; font-size:0.9rem;">
+                🎯 目前聚焦：<span id="globalFocusTitle" style="color:var(--text-main);"></span>
+            </div>
+            <div style="color:var(--text-muted); font-size:0.78rem; margin-top:2px;">
+                提醒：矩陣已隱藏，但下方趨勢與 Top 10 仍受此議題條件限制。
+            </div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <button type="button" class="btn-secondary" onclick="clearIssueFocus()" style="padding:5px 12px; font-size:0.8rem; border-color:#f87171; color:#fca5a5;">✕ 清除聚焦</button>
+        </div>
+    </div>
+
+
+    <!-- 壹、戰情總覽區塊 -->
+    <div class="gov-category" id="catOverview" data-category="overview">
+        <div class="gov-header">
+            <div class="gov-title"><span>壹、戰情總覽</span> <span class="gov-badge">大盤指標與好感對抗</span></div>
+            <div id="filterSummaryText" style="font-size:0.8rem; color:var(--text-dim);"></div>
+        </div>
+        <section class="kpi-section" id="kpiSection">
+            <div class="cards-grid" id="kpiCards"><div class="empty-state">請載入資料</div></div>
+        </section>
+    </div>
+
+    <!-- 貳、品牌競爭區塊 -->
+    <div class="gov-category" id="catCompetition" data-category="competition">
+        <div class="gov-header">
+            <div class="gov-title"><span>貳、品牌競爭</span> <span class="gov-badge">社群通路分佈</span></div>
+        </div>
+        <section class="kpi-section" id="channelSection" style="display:none;">
+            <div class="card" style="padding: 15px 20px; flex-direction: row; align-items: center; justify-content: space-between;">
+                <div id="channelBarContainer" style="width: 75%; height: 24px; display: flex; border-radius: 12px; overflow: hidden; background: var(--bg-base);"></div>
+                <div id="channelLegend" style="width: 23%; font-size: 0.8rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px;"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 參、風險監控區塊 -->
+    <div class="gov-category" id="catRisk" data-category="risk">
+        <div class="gov-header">
+            <div class="gov-title"><span>參、風險監控</span> <span class="gov-badge">負評暴增警報與異常探勘</span></div>
+        </div>
+        
+        
+<!-- 品牌負評增加雷達 -->
+        <section class="kpi-section" id="radarSection">
+            <div class="section-header">
+                <div class="section-title" style="color: var(--alert-color);">🚨 品牌負評增加雷達</div>
+                <div style="display:flex; gap:10px; align-items:center; font-size:0.85rem;">
+                    <select id="radarScope" class="input-control" style="padding:2px 5px;" onchange="updateRadar()">
+                        <option value="selected">預設: 跟隨選中品牌</option>
+                        <option value="all">切換: 本業務全群組比較</option>
+                    </select>
+                    <label>本期負面量 ≥ <input type="number" id="radarMinCurr" class="input-control" style="width:45px; padding:2px; text-align:center;" value="3" onchange="updateRadar()"></label>
+                    <label>增加量 ≥ <input type="number" id="radarMinInc" class="input-control" style="width:45px; padding:2px; text-align:center;" value="2" onchange="updateRadar()"></label>
+                </div>
+            </div>
+            <div class="card" style="padding:0; overflow:hidden; border: 1px solid rgba(239, 68, 68, 0.4);">
+                <div id="radarEmptyMsg" class="empty-state" style="padding: 20px;">請套用篩選以計算雷達資料。</div>
+                <div class="table-wrap" id="radarTableWrap" style="display:none;">
+                    <table class="modern-table">
+                        <thead style="background: rgba(239, 68, 68, 0.1);">
+                            <tr>
+                                <th width="9%">代表日期</th>
+                                <th width="12%">品牌群組</th>
+                                <th width="14%">爭議議題</th>
+                                <th width="10%" style="text-align:right;">本期負評</th>
+                                <th width="10%" style="text-align:right;">前期負評</th>
+                                <th width="12%" style="text-align:right;">增加量(幅)與依據</th>
+                                <th width="33%">代表討論 (該議題最高)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="radarTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 解約／申訴候選 -->
+        <section class="kpi-section" id="churnCandidateSection" style="display:none;">
+            <div class="section-header">
+                <div class="section-title" style="color: var(--alert-color);">⚠️ 解約／申訴候選</div>
+                <div style="display:flex; gap:10px; align-items:center; font-size:0.85rem;">
+                    <select id="churnScope" class="input-control" style="padding:2px 5px;" onchange="ChurnRiskModule.render()">
+                        <option value="selected">預設: 跟隨選中品牌</option>
+                        <option value="all">切換: 本業務全群組比較</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display:flex; flex-direction:column; gap:16px;">
+                <!-- 攜碼／解約候選 -->
+                <div class="card" style="padding:16px; border: 1px solid var(--border-subtle); display:flex; flex-direction:column; gap:10px; cursor:default;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div style="font-weight:700; color:var(--text-main);">
+                            <span style="color:var(--alert-color);">⚠</span> 攜碼／解約候選
+                            <span id="churnSummary" style="font-weight:normal; font-size:0.8rem; color:var(--text-muted); margin-left:8px;"></span>
+                        </div>
+                        <div style="font-size:0.75rem; color:var(--text-dim);">※ 候選訊號僅代表出現相關關鍵詞，不代表已實際解約、申訴或流失。</div>
+                    </div>
+                    <div class="table-wrap" style="max-height:240px; overflow-y:auto;">
+                        <table class="modern-table" style="font-size:0.8rem;">
+                            <thead style="position:sticky; top:0; background:var(--table-head-bg); z-index:2;">
+                                <tr>
+                                    <th width="10%">代表日期</th>
+                                    <th width="12%">品牌群組</th>
+                                    <th width="14%">命中詞</th>
+                                    <th width="14%">爭議議題</th>
+                                    <th width="32%">討論摘要</th>
+                                    <th width="9%" style="text-align:right;">本期負評</th>
+                                    <th width="9%" style="text-align:center;">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="churnTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 外部申訴候選 -->
+                <div class="card" style="padding:16px; border: 1px solid var(--border-subtle); display:flex; flex-direction:column; gap:10px; cursor:default;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div style="font-weight:700; color:var(--text-main);">
+                            <span style="color:var(--alert-color);">🚨</span> 外部申訴候選
+                            <span id="complaintSummary" style="font-weight:normal; font-size:0.8rem; color:var(--text-muted); margin-left:8px;"></span>
+                        </div>
+                        <div style="font-size:0.75rem; color:var(--text-dim);">※ 候選訊號僅代表出現相關關鍵詞，不代表已實際解約、申訴或流失。</div>
+                    </div>
+                    <div class="table-wrap" style="max-height:240px; overflow-y:auto;">
+                        <table class="modern-table" style="font-size:0.8rem;">
+                            <thead style="position:sticky; top:0; background:var(--table-head-bg); z-index:2;">
+                                <tr>
+                                    <th width="10%">代表日期</th>
+                                    <th width="12%">品牌群組</th>
+                                    <th width="14%">命中詞</th>
+                                    <th width="14%">爭議議題</th>
+                                    <th width="32%">討論摘要</th>
+                                    <th width="9%" style="text-align:right;">本期負評</th>
+                                    <th width="9%" style="text-align:center;">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="complaintTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- 長尾風險追蹤 -->
+        <section class="kpi-section" id="longTailSection" style="display:none;">
+            <div class="section-header">
+                <div class="section-title" style="color: var(--alert-color);">🕰️ 長尾風險追蹤 <span style="font-size:0.75rem; color:var(--text-dim); text-transform:none; font-weight:normal; margin-left:8px;">※ 顯示跨期持續存在但未達雷達門檻之議題</span></div>
+                <div style="display:flex; gap:10px; align-items:center; font-size:0.85rem;">
+                    <select id="longTailScope" class="input-control" style="padding:2px 5px;" onchange="LongTailModule.render()">
+                        <option value="selected">預設: 跟隨選中品牌</option>
+                        <option value="all">切換: 本業務全群組比較</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card" style="padding:0; overflow:hidden; border: 1px solid var(--border-subtle);">
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 20px; background:var(--bg-card); border-bottom:1px solid var(--border-subtle); font-size:0.85rem;">
+                    <div style="display:flex; gap:16px;">
+                        <div style="font-weight:700; color:var(--text-main);">收錄議題：<span id="longTailCount" style="color:var(--primary-light);">0</span></div>
+                        <div style="font-weight:700; color:var(--text-main);">最久持續：<span id="longTailMaxMth" style="color:var(--primary-light);">0</span> 個月</div>
+                        <div style="font-weight:700; color:var(--text-main);">累積負評：<span id="longTailCumNeg" style="color:var(--neg-red);">0</span></div>
+                    </div>
+                    <div style="display:flex; gap:16px;">
+                        <div><span style="color:var(--neg-red);">🔴 高風險</span>：<span id="longTailHighCount" style="font-family:monospace; font-weight:700;">0</span></div>
+                        <div><span style="color:#f97316;">🟠 中風險</span>：<span id="longTailMedCount" style="font-family:monospace; font-weight:700;">0</span></div>
+                        <div><span style="color:var(--text-muted);">⚪ 低風險</span>：<span id="longTailLowCount" style="font-family:monospace; font-weight:700;">0</span></div>
+                    </div>
+                </div>
+                <div id="longTailEmptyMsg" class="empty-state" style="padding: 20px; min-height: 120px; display:flex; align-items:center; justify-content:center;">目前條件下，無符合長尾風險特徵之議題。</div>
+                <div class="table-wrap" id="longTailTableWrap" style="display:none; max-height:280px; overflow-y:auto; padding:0;">
+                    <table class="modern-table">
+                        <thead style="position:sticky; top:0; background:var(--table-head-bg); z-index:2;">
+                            <tr>
+                                <th width="8%" style="text-align:center;">風險等級</th>
+                                <th width="10%">品牌群組</th>
+                                <th width="18%">爭議議題</th>
+                                <th width="8%" style="text-align:right;">前期負評</th>
+                                <th width="8%" style="text-align:right;">本期負評</th>
+                                <th width="12%" style="text-align:center;">首次/最近出現</th>
+                                <th width="10%" style="text-align:center;">持續月份</th>
+                                <th width="10%" style="text-align:right;">累積負評</th>
+                                <th width="16%" style="text-align:center;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="longTailTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 肆、議題分析區塊 -->
+    <div class="gov-category" id="catAnalysis" data-category="analysis">
+        <div class="gov-header" id="catAnalysisHeader">
+            <div class="gov-title"><span>肆、議題分析</span> <span class="gov-badge">象限分佈、每日走勢與焦點探勘</span></div>
+        </div>
+        
+        <!-- 議題分析區塊頂部聚焦提示 -->
+        <div class="matrix-focus-bar" id="analysisFocusBanner" style="display:none; margin-top: 4px; margin-bottom: 4px; padding: 12px 16px; background: rgba(56, 189, 248, 0.1); border: 1px solid var(--primary-light); border-radius: 8px;">
+            <div>
+                <div style="color:var(--primary-light); font-weight:700; font-size:1.05rem; display:flex; align-items:center; gap:8px;">
+                    🎯 已聚焦議題：<span id="analysisFocusTitle" style="color:var(--text-main);"></span>
+                </div>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <button type="button" class="btn-secondary" onclick="clearIssueFocus()" style="padding:5px 14px; font-size:0.85rem; border-color:#f87171; color:#fca5a5; font-weight:bold;">✕ 清除聚焦</button>
+            </div>
+        </div>
+        <!-- 議題聲量與正向佔比矩陣 (2x2) 升級探索入口版 -->
+        <section class="kpi-section" id="matrixSection">
+        <div class="section-header">
+            <div class="section-title" style="color: var(--info-color);">📊 議題聲量與正向佔比矩陣 (2x2 探索入口)</div>
+            <!-- 基本控制項：觀察範圍 + 最低顯示聲量 + 進階設定按鈕 -->
+            <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; font-size:0.85rem;">
+                <label>觀察範圍：
+                    <select id="matrixScope" class="input-control" style="padding:3px 6px;" onchange="MatrixModule.render()">
+                        <option value="selected">預設: 跟隨選中品牌</option>
+                        <option value="all">切換: 本業務全群組比較</option>
+                    </select>
+                </label>
+                <label>最低顯示聲量 ≥ <input type="number" id="matrixMinVol" class="input-control" style="width:50px; padding:3px; text-align:center;" value="3" min="1" onchange="MatrixModule.render()"></label>
+                <button type="button" class="btn-secondary" onclick="MatrixModule.toggleAdvanced()" id="btnMatrixAdv">⚙️ 進階座標與基準設定 ▾</button>
+            </div>
+        </div>
+
+        <!-- 進階控制項面板 (預設收合，減少初次閱讀負擔) -->
+        <div class="matrix-adv-panel" id="matrixAdvPanel">
+            <label>橫軸 (X) 口徑：
+                <select id="matrixXFormula" class="input-control" style="padding:3px 6px;" onchange="MatrixModule.render()">
+                    <option value="total">正 ÷ 總聲量 (含中立，觀察整體正面比例)</option>
+                    <option value="polarized">正 ÷ (正+負) (不含中立，觀察明確情緒傾向)</option>
+                </select>
+            </label>
+            <label>橫軸 (X) 分界基準：
+                <select id="matrixXBaselineMode" class="input-control" style="padding:3px 6px;" onchange="MatrixModule.render()">
+                    <option value="weighted">目前範圍整體正向佔比 (動態比較)</option>
+                    <option value="fixed50">固定 50% (檢驗正面是否過半)</option>
+                </select>
+            </label>
+            <label>橫軸 (X) 視野：
+                <select id="matrixXAxisScale" class="input-control" style="padding:3px 6px;" onchange="MatrixModule.render()">
+                    <option value="auto">自動局部放大 (拉開低比例群聚點)</option>
+                    <option value="full">全幅 0%~100% (宏觀檢視)</option>
+                </select>
+            </label>
+            <label>縱軸 (Y) 尺度：
+                <select id="matrixYScaleMode" class="input-control" style="padding:3px 6px;" onchange="MatrixModule.render()">
+                    <option value="log">對數模式 Log (推薦：自動拉開高低聲量擠壓)</option>
+                    <option value="linear">線性模式 Linear (真實比例間距)</option>
+                </select>
+            </label>
+            <label>縱軸 (Y) 中位數母體：
+                <select id="matrixYBaseScope" class="input-control" style="padding:3px 6px;" onchange="MatrixModule.render()">
+                    <option value="displayed">依目前畫面顯示議題計算 (畫面與分界一致)</option>
+                    <option value="all_active">依全部有聲量議題計算 (含未達門檻長尾)</option>
+                </select>
+            </label>
+        </div>
+
+        <!-- 三句常駐導讀與展開說明 -->
+        <div class="matrix-guide-bar">
+            <div class="matrix-guide-header">
+                <div>
+                    💡 <strong>快速導讀：</strong>每個點代表一個「<strong>品牌群組 × 議題</strong>」（標有短編號 <code>01</code>、<code>02</code> 對照下方表格）。<strong>越上方</strong>代表本期討論聲量越大，<strong>越右方</strong>代表正向佔比越高。<strong>點選圓點或下方表格列</strong>，即可連動查看該議題的每日趨勢與 Top 10 討論。
+                </div>
+                <button type="button" class="btn-secondary" onclick="MatrixModule.toggleGuide()" id="btnMatrixGuide" style="padding:2px 8px; font-size:0.76rem;">📖 如何判讀與公式說明 ▾</button>
+            </div>
+            <div class="matrix-guide-details" id="matrixGuideDetails">
+                <div>• <strong>橫軸公式與中立影響</strong>：預設「正 ÷ 總聲量（正+中+負）」，因此正向與負向佔比相加不一定為 100%，差額為中立討論；低正向佔比可能是中立多，未必是負評多。可在「進階設定」切換為「正 ÷ (正+負)」純看正負傾向。</div>
+                <div>• <strong>縱軸與分界虛線意義</strong>：縱軸為「期間總聲量（主文+回文則數）」，非獨立人數。垂直虛線為目前範圍整體正向佔比（或固定 50%），水平虛線為顯示議題之聲量中位數；<strong>高／低聲量與高／低正向皆為相對目前基準之比較，不代表經確認的危機等級</strong>。</div>
+                <div>• <strong>時間範圍獨立性</strong>：本圖僅反映「本期分布現況」，非前期增減比較（前期增減請看上方負評雷達）。</div>
+            </div>
+        </div>
+
+        <!-- 狀態提示列 (範圍與局部放大明示) -->
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; background:var(--table-head-bg); padding:8px 14px; border-radius:8px; border:1px solid var(--border-subtle); font-size:0.8rem;">
+            <div id="matrixScopeText" style="color:var(--text-muted);">矩陣總覽範圍：請套用篩選</div>
+            <div id="matrixScaleNotice" style="color:var(--alert-color); font-weight:600;"></div>
+        </div>
+
+
+
+        <div class="card" style="padding:16px; border: 1px solid var(--border-subtle); display:flex; flex-direction:column; gap:14px; cursor:default;">
+            <div id="matrixEmptyMsg" class="empty-state" style="padding: 20px;">請套用篩選以顯示議題分佈。</div>
+            <div id="matrixMainContainer" style="display:none; flex-direction:column; gap:14px;">
+                <!-- 等比例動態繪圖容器 (不再使用 preserveAspectRatio="none"，防止圓點與字體變形) -->
+                <div id="matrixCanvasWrap" style="position:relative; width:100%; height:360px; background:var(--badge-bg); border-radius:8px; border:1px solid #1e293b; overflow:hidden;">
+                    <svg id="matrixSvg" style="width:100%; height:100%; display:block;"></svg>
+                    <div id="matrixTooltip" style="display:none; position:absolute; pointer-events:none; background:var(--tooltip-bg); border:1px solid var(--primary-light); color:var(--text-main); padding:10px 14px; border-radius:8px; font-size:0.8rem; box-shadow:0 8px 20px rgba(0,0,0,0.65); z-index:20; max-width:320px; line-height:1.45;"></div>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                        <span style="font-size:0.84rem; font-weight:700; color:var(--text-main);">📋 議題編號對照與明細清單 <span style="font-weight:400; color:var(--text-muted); font-size:0.78rem;">(短編號對應圖上圓點，點擊任一列即可聚焦下方趨勢與 Top 10)</span></span>
+                        <span id="matrixListCountText" style="font-size:0.76rem; color:var(--text-dim);"></span>
+                    </div>
+                    <div class="table-wrap" style="max-height:240px; overflow-y:auto; border:1px solid var(--border-subtle); border-radius:6px;">
+                        <table class="modern-table" style="font-size:0.8rem;">
+                            <thead style="position:sticky; top:0; background:var(--table-head-bg); z-index:2;">
+                                <tr>
+                                    <th width="7%">編號</th>
+                                    <th width="9%">操作</th>
+                                    <th width="22%">相對位置分區 (非危機等級)</th>
+                                    <th width="14%">品牌群組</th>
+                                    <th width="20%">議題名稱</th>
+                                    <th width="9%" style="text-align:right;" id="thMatrixPosRate">正向佔比</th>
+                                    <th width="9%" style="text-align:right;">負向佔比</th>
+                                    <th width="10%" style="text-align:right;">總聲量 (正/中/負)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="matrixTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 下方鑽取區：趨勢圖與排行榜 -->
+    <section class="chart-card" id="drilldownSection">
+        <div style="font-size: 0.95rem; font-weight: 700;">每日情緒聲量趨勢 <span id="trendTargetText" style="color:var(--primary-light);"></span></div>
+        <div class="svg-container" id="svgContainer">
+            <svg class="chart-svg" id="trendSvg" viewBox="0 0 1000 240" preserveAspectRatio="none"></svg>
+            <div id="trendTooltip" style="display:none; position:absolute; pointer-events:none; background:var(--tooltip-bg); border:1px solid var(--border-subtle); color:var(--text-main); padding:8px 12px; border-radius:8px; font-size:0.8rem; box-shadow:0 8px 20px rgba(0,0,0,0.5); z-index:20; white-space:nowrap; line-height:1.5;"></div>
+        </div>
+    </section>
+
+    <section class="tables-section">
+        <div class="table-card" id="top10PosCard">
+            <div style="font-weight: 700;"><span style="color:var(--pos-green);">●</span> Top 10 正向焦點 <span id="posTableTargetText" style="color:var(--text-muted);"></span></div>
+            <div class="table-wrap">
+                <table class="modern-table">
+                    <thead><tr><th width="12%">日期</th><th width="18%">品牌</th><th width="20%">議題</th><th width="38%">摘要</th><th width="12%" style="text-align:right;">期間聲量</th></tr></thead>
+                    <tbody id="posTbody"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="table-card" id="top10NegCard">
+            <div style="font-weight: 700;"><span style="color:var(--neg-red);">●</span> Top 10 負向警報 <span id="negTableTargetText" style="color:var(--text-muted);"></span></div>
+            <div class="table-wrap">
+                <table class="modern-table">
+                    <thead><tr><th width="12%">日期</th><th width="18%">品牌</th><th width="20%">議題</th><th width="38%">摘要</th><th width="12%" style="text-align:right;">期間聲量</th></tr></thead>
+                    <tbody id="negTbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    </div><!-- 關閉肆、議題分析區塊 -->
+
+    
+    <!-- 計算依據與數據追溯 Modal -->
+    <div id="auditModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(3px);">
+        <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px; width:90%; max-width:1100px; max-height:85vh; display:flex; flex-direction:column; box-shadow:0 10px 30px rgba(0,0,0,0.8); overflow:hidden;">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:flex-start; background:var(--table-head-bg);">
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <div style="font-size:1.2rem; font-weight:800; color:var(--title-color); display:flex; align-items:center; gap:8px;">
+                        🔍 計算依據與數據追溯
+                        <span id="auditModalMonth" class="badge-num" style="font-size:0.75rem; background:var(--bg-card); font-weight:600;"></span>
+                    </div>
+                    <div style="display:flex; flex-wrap:wrap; gap:16px; font-size:0.85rem; color:var(--text-muted); font-weight:600;">
+                        <div>來源：<span id="auditModalSource" style="color:var(--text-main);"></span></div>
+                        <div>標靶：<span id="auditModalTarget" style="color:var(--primary-light);"></span></div>
+                        <div>議題：<span id="auditModalIssue" style="color:var(--pos-green);"></span></div>
+                        <div>統計期間：<span id="auditModalDateRange" style="color:var(--text-main); font-family:monospace;"></span></div>
+                        <div id="auditModalRiskTypeContainer" style="display:none;">風險類型：<span id="auditModalRiskType" style="color:var(--alert-color);"></span></div>
+                        <div id="auditModalTermsContainer" style="display:none;">命中詞：<span id="auditModalTermsSummary" style="color:var(--pos-green); font-weight:700;"></span></div>
+                    </div>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+                    <button class="btn-secondary" style="padding:5px 12px; font-size:0.8rem;" onclick="AuditDetailModal.close()">✕ 關閉 (Esc)</button>
+                    <div style="display:flex; gap:8px;">
+                        <button id="auditBtnFocus" class="btn-primary" style="padding:5px 12px; font-size:0.8rem; display:none;" onclick="AuditDetailModal.focusAndClose()">🎯 聚焦此議題</button>
+                        <button class="btn-secondary" style="padding:5px 12px; font-size:0.8rem;" onclick="AuditDetailModal.copyToClipboard()">📋 複製本次依據</button>
+                    </div>
+                </div>
+            </div>
+            <div id="auditModalWarning" style="display:none; padding:12px 20px; background:rgba(245, 158, 11, 0.1); border-bottom:1px solid rgba(245, 158, 11, 0.3); align-items:center; justify-content:space-between;">
+                <div style="color:#f59e0b; font-weight:700; font-size:0.85rem;">⚠️ 目前模式未顯示議題分析區塊，無法進行聚焦跳轉。</div>
+                <button class="btn-primary" style="background:#f59e0b; color:#0f172a; border:none; padding:5px 12px; font-size:0.8rem; font-weight:700;" onclick="AuditDetailModal.switchToExplorationAndFocus()">切換至議題探索模式</button>
+            </div>
+            <div style="padding:12px 20px; background:var(--guide-bg); border-bottom:1px solid var(--border-subtle); font-size:0.85rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-weight:700; color:var(--text-main);">📊 數值勾稽核對條</div>
+                    <div id="auditModalValidation" style="font-weight:700; background:var(--bg-base); padding:2px 8px; border-radius:4px; border:1px solid var(--border-subtle);"></div>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin-top:8px;">
+                    <div id="auditModalStats" style="color:var(--text-main); font-family:monospace; font-size:0.9rem; font-weight:700;"></div>
+                    <div id="auditModalFormula" style="font-size:0.85rem; color:var(--primary-light); background:rgba(56, 189, 248, 0.1); padding:2px 8px; border-radius:4px; font-family:monospace; border:1px solid var(--primary-light);"></div>
+                </div>
+            </div>
+            <div class="table-wrap" style="flex:1; overflow-y:auto; padding:0;">
+                <table class="modern-table" style="font-size:0.85rem; margin:0; width:100%;">
+                    <thead style="position:sticky; top:0; background:var(--table-head-bg); z-index:2; box-shadow:0 1px 0 var(--border-subtle);">
+                        <tr>
+                            <th width="10%">代表日期</th>
+                            <th width="12%">品牌群組</th>
+                            <th width="12%">爭議議題</th>
+                            <th width="35%">討論摘要 (平台)</th>
+                            <th width="9%" style="text-align:right;">正/中/負 (總)</th>
+                            <th width="12%">命中詞</th>
+                            <th width="10%" style="text-align:right;">UID (來源月)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="auditModalTbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 長尾風險歷史檢視 Modal -->
+    <div id="longTailHistoryOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(3px);">
+        <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px; width:90%; max-width:850px; max-height:85vh; display:flex; flex-direction:column; box-shadow:0 10px 30px rgba(0,0,0,0.8); overflow:hidden;">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:flex-start; background:var(--table-head-bg);">
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <div style="font-size:1.2rem; font-weight:800; color:var(--title-color); display:flex; align-items:center; gap:8px;">
+                        🕰 長尾風險歷史檢視
+                    </div>
+                    <div style="display:flex; flex-wrap:wrap; gap:16px; font-size:0.85rem; color:var(--text-muted); font-weight:600;">
+                        <div>品牌：<span id="ltHistBrand" style="color:var(--text-main);"></span></div>
+                        <div>議題：<span id="ltHistIssue" style="color:var(--primary-light);"></span></div>
+                        <div>首次出現：<span id="ltHistFirst" style="color:var(--text-main); font-family:monospace;"></span></div>
+                        <div>最近出現：<span id="ltHistLast" style="color:var(--text-main); font-family:monospace;"></span></div>
+                        <div>持續月份：<span id="ltHistMths" style="color:var(--pos-green); font-family:monospace;"></span></div>
+                        <div>累積負評：<span id="ltHistCumNeg" style="color:var(--neg-red); font-family:monospace;"></span></div>
+                    </div>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+                    <button class="btn-secondary" style="padding:5px 12px; font-size:0.8rem;" onclick="LongTailHistoryModal.close()">✕ 關閉 (Esc)</button>
+                </div>
+            </div>
+            <div class="table-wrap" style="flex:1; overflow-y:auto; padding:0;">
+                <table class="modern-table" style="font-size:0.85rem; margin:0; width:100%;">
+                    <thead style="position:sticky; top:0; background:var(--table-head-bg); z-index:2; box-shadow:0 1px 0 var(--border-subtle);">
+                        <tr>
+                            <th width="15%">月份</th>
+                            <th width="15%" style="text-align:right;">該月負評</th>
+                            <th width="70%">代表討論摘要 (該月最高負評)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ltHistTbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+<footer class="status-footer">
+        <div>已載入月份資料：<span id="loadedMonths" style="color:var(--primary-light); font-weight: 600;">無</span></div>
+        <div>全域活躍討論串(去重)：<span id="globalThreads" style="color:var(--text-main);">0</span> 串 | 總期間聲量：<span id="globalVol" style="color:var(--text-main);">0</span></div>
+    </footer>
+
+<script>
+
+    // =========================================================================
+    // 長尾風險持續月份通用計算函式
+    // =========================================================================
+    function parseYearMonth(ym) {
+        if (!ym) return null;
+        const s = String(ym).replace(/\D/g, '').slice(0, 6);
+        if (s.length < 6) return null;
+        return {
+            year: parseInt(s.slice(0, 4), 10),
+            month: parseInt(s.slice(4, 6), 10)
+        };
+    }
+
+    function calculateDurationMonths(firstSeen, lastSeen, sources = []) {
+        // 優先策略 1：若有 sources 陣列，提取不重複的 yyyyMM 集合計算
+        if (Array.isArray(sources) && sources.length > 0) {
+            const monthSet = new Set();
+            sources.forEach(src => {
+                const m = String(src).match(/\d{6}/);
+                if (m) monthSet.add(m[0]);
+            });
+            if (monthSet.size > 0) {
+                return monthSet.size;
+            }
+        }
+
+        // 優先策略 2：依據首次與最近出現月份的跨度差額計算 (+1 包含當月)
+        const start = parseYearMonth(firstSeen);
+        const end = parseYearMonth(lastSeen);
+        if (start && end) {
+            const diff = (end.year - start.year) * 12 + (end.month - start.month) + 1;
+            return Math.max(1, diff);
+        }
+
+        return 1; // 預設單月
+    }
+
+    // =========================================================================
+    // 長尾歷史檢視面板 (LongTailHistoryModal - Sprint 4B)
+    // =========================================================================
+    const LongTailHistoryModal = {
+        open(issueKey) {
+            const overlay = document.getElementById('longTailHistoryOverlay');
+            if (!overlay || !window.currentCalcState || !window.currentCalcState.issueAgg) return;
+            
+            const record = window.currentCalcState.issueAgg.get(issueKey);
+            if (!record) return;
+            
+            const persistentMonths = calculateDurationMonths(record.firstMonth, record.lastMonth, record.sources);
+            
+            document.getElementById('ltHistBrand').textContent = record.compName || record.compGroup;
+            document.getElementById('ltHistIssue').textContent = record.issue;
+            document.getElementById('ltHistFirst').textContent = record.firstMonth || '-';
+            document.getElementById('ltHistLast').textContent = record.lastMonth || '-';
+            document.getElementById('ltHistMths').textContent = persistentMonths + " 個月";
+            document.getElementById('ltHistCumNeg').textContent = record.cumulativeNeg + " 則";
+            
+            const tbody = document.getElementById('ltHistTbody');
+            tbody.innerHTML = '';
+            
+            if (record.monthlyNegMap && record.monthlyNegMap.size > 0) {
+                // 依月份降冪排序
+                const months = Array.from(record.monthlyNegMap.keys()).sort((a, b) => b.localeCompare(a));
+                
+                months.forEach(mth => {
+                    const negCount = record.monthlyNegMap.get(mth);
+                    const sample = record.monthlySamples ? record.monthlySamples.get(mth) : null;
+                    
+                    const tr = document.createElement('tr');
+                    
+                    let sampleHtml = '-';
+                    if (sample) {
+                        const safeUrl = (sample.url && sample.url.startsWith('http')) ? sample.url : '#';
+                        const linkIcon = safeUrl !== '#' ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--info-color);text-decoration:none;margin-left:4px;font-weight:bold;" title="前往原文">↗</a>` : '';
+                        sampleHtml = `
+                            <div class="summary-text" style="-webkit-line-clamp:2;" title="${escapeHtml(sample.summary)}">${escapeHtml(sample.summary)}</div>
+                            <div style="font-size:0.75rem; text-align:right;">${linkIcon}</div>
+                        `;
+                    }
+                    
+                    tr.innerHTML = `
+                        <td style="font-family:monospace; color:var(--text-main); font-weight:600;">${mth}</td>
+                        <td style="text-align:right; font-family:monospace; color:var(--neg-red); font-weight:bold;">${negCount}</td>
+                        <td>${sampleHtml}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                tbody.innerHTML = `<tr><td colspan="3" class="empty-state">無歷史明細。</td></tr>`;
+            }
+            
+            overlay.style.display = 'flex';
+        },
+        
+        close() {
+            const overlay = document.getElementById('longTailHistoryOverlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+    };
+const AuditDetailModal = {
+        currentRecords: [],
+        currentFocusTarget: null,
+        
+        open(options) {
+            this.options = options;
+            const warnEl = document.getElementById('auditModalWarning');
+            if (warnEl) warnEl.style.display = 'none';
+
+            const state = window.currentCalcState;
+            if (!state || !state.details) return;
+
+            // 1. 純唯讀篩選，不影響 currentCalcState
+            const filtered = state.details.filter(options.filterFn);
+            this.currentRecords = filtered;
+
+            // 2. 算術加總 (使用單一 auditSummary 物件)
+            this.auditSummary = { uidCount: 0, positive: 0, neutral: 0, negative: 0, total: 0 };
+            const uids = new Set();
+            filtered.forEach(r => {
+                this.auditSummary.positive += r.currVol.p;
+                this.auditSummary.neutral += r.currVol.m;
+                this.auditSummary.negative += r.currVol.n;
+                this.auditSummary.total += r.currVol.tot;
+                uids.add(r.uid);
+            });
+            this.auditSummary.uidCount = uids.size;
+
+            // 3. 勾稽驗證
+            let isValid = true;
+            let valMsg = "✅ Modal加總 = 外層指標";
+            let valColor = "var(--pos-green)";
+            let formulaStr = "";
+            
+            if (options.expectedStats) {
+                if (options.expectedStats.pos !== undefined && this.auditSummary.positive !== options.expectedStats.pos) isValid = false;
+                if (options.expectedStats.neg !== undefined && this.auditSummary.negative !== options.expectedStats.neg) isValid = false;
+                if (options.expectedStats.tot !== undefined && this.auditSummary.total !== options.expectedStats.tot) isValid = false;
+                
+                if (!isValid) {
+                    valMsg = "❌ 數值異常：明細加總與外層指標不符！";
+                    valColor = "var(--alert-color)";
+                }
+                
+                if (options.formulaType === 'total') {
+                    formulaStr = `總聲量 ${this.auditSummary.total} = 正 ${this.auditSummary.positive} + 中 ${this.auditSummary.neutral} + 負 ${this.auditSummary.negative}`;
+                } else if (options.formulaType === 'negIncrease') {
+                    const inc = options.expectedStats.inc || 0;
+                    const prevN = this.auditSummary.negative - inc;
+                    formulaStr = `負評增加 = 本期 ${this.auditSummary.negative} - 前期 ${prevN} = ${inc > 0 ? '+' : ''}${inc}`;
+                } else if (options.formulaType === 'neg') {
+                    formulaStr = `負評加總 = ${this.auditSummary.negative}`;
+                }
+            }
+
+            // 4. 渲染 Meta
+            const loadedMonthsStr = Array.from(state.metadata.loadedMonths).join(', ') || '未載入';
+            const elMonth = document.getElementById('auditModalMonth');
+            if(elMonth) elMonth.textContent = `資料月份: ${loadedMonthsStr}`;
+            
+            const elSource = document.getElementById('auditModalSource');
+            if(elSource) elSource.textContent = options.sourceModule || '未知來源';
+            
+            const elTarget = document.getElementById('auditModalTarget');
+            if(elTarget) elTarget.textContent = options.targetBrand || '全品牌';
+            
+            const elIssue = document.getElementById('auditModalIssue');
+            if(elIssue) elIssue.textContent = options.targetIssue || '全議題';
+            
+            const ds = state.metadata.currRange.start || '全期';
+            const de = state.metadata.currRange.end || '全期';
+            const elDateRange = document.getElementById('auditModalDateRange');
+            if(elDateRange) elDateRange.textContent = `${ds} ~ ${de}`;
+
+            const elVal = document.getElementById('auditModalValidation');
+            if(elVal) elVal.innerHTML = `<span style="color:${valColor};">${valMsg}</span>`;
+            
+            const elStats = document.getElementById('auditModalStats');
+            if(elStats) elStats.innerHTML = `討論串數：<span style="color:var(--primary-light);">${uids.size}</span> ｜ 正：<span style="color:var(--pos-green);">${this.auditSummary.positive}</span> ｜ 中：<span style="color:var(--text-dim);">${this.auditSummary.neutral}</span> ｜ 負：<span style="color:var(--neg-red);">${this.auditSummary.negative}</span>`;
+            
+            const hasContext = !!options.auditContextMap;
+            const riskTypeContainer = document.getElementById('auditModalRiskTypeContainer');
+            const riskTypeEl = document.getElementById('auditModalRiskType');
+            const termsContainer = document.getElementById('auditModalTermsContainer');
+            const termsSummary = document.getElementById('auditModalTermsSummary');
+            
+            let matchedTermsSet = new Set();
+            let riskTypesSet = new Set();
+            
+            if (hasContext) {
+                Object.values(options.auditContextMap).forEach(ctx => {
+                    if (ctx.type === 'churn') riskTypesSet.add('⚠ 攜碼／解約');
+                    if (ctx.type === 'complaint') riskTypesSet.add('🚨 外部申訴');
+                    if (ctx.matchedTerms) ctx.matchedTerms.forEach(t => matchedTermsSet.add(t));
+                });
+            }
+            
+            if (riskTypeContainer) {
+                if (riskTypesSet.size > 0) {
+                    if(riskTypeEl) riskTypeEl.textContent = Array.from(riskTypesSet).join('、');
+                    riskTypeContainer.style.display = 'block';
+                } else {
+                    riskTypeContainer.style.display = 'none';
+                }
+            }
+
+            if (termsContainer) {
+                if (matchedTermsSet.size > 0) {
+                    if(termsSummary) termsSummary.textContent = Array.from(matchedTermsSet).join('、');
+                    termsContainer.style.display = 'block';
+                } else {
+                    termsContainer.style.display = 'none';
+                }
+            }
+            
+            let thead = document.getElementById('auditModalThead');
+            if (!thead) {
+                const tables = document.querySelectorAll('#auditModalOverlay table');
+                if(tables.length > 0) {
+                    thead = tables[0].querySelector('thead');
+                }
+            }
+            if (thead) {
+                thead.innerHTML = `
+                    <tr>
+                        <th width="10%">代表日期</th>
+                        <th width="14%">品牌/產品</th>
+                        <th width="12%">爭議議題</th>
+                        <th width="${hasContext ? '33%' : '45%'}">討論摘要 (平台)</th>
+                        <th width="9%" style="text-align:right;">正/中/負 (總)</th>
+                        ${hasContext ? '<th width="12%">命中詞</th>' : ''}
+                        <th width="10%" style="text-align:right;">UID (來源月)</th>
+                    </tr>
+                `;
+            }
+            
+            const formulaEl = document.getElementById('auditModalFormula');
+            if (formulaEl) {
+                if (formulaStr) {
+                    formulaEl.textContent = formulaStr;
+                    formulaEl.style.display = 'block';
+                } else {
+                    formulaEl.style.display = 'none';
+                }
+            }
+
+            // 5. 聚焦按鈕邏輯
+            const focusBtn = document.getElementById('auditBtnFocus');
+            if (focusBtn) {
+                if (options.targetIssue && options.targetIssue !== '全議題' && options.compGroupKey) {
+                    this.currentFocusTarget = { compGroup: options.compGroupKey, issue: options.targetIssue };
+                    focusBtn.style.display = 'inline-block';
+                } else {
+                    this.currentFocusTarget = null;
+                    focusBtn.style.display = 'none';
+                }
+            }
+
+            // 6. 渲染表格 (負評降冪 -> 日期降冪)
+            filtered.sort((a, b) => {
+                if (b.currVol.n !== a.currVol.n) return b.currVol.n - a.currVol.n;
+                if (a.firstDate === '-' || b.firstDate === '-') return 0;
+                return b.firstDate.localeCompare(a.firstDate);
+            });
+
+            const tbody = document.getElementById('auditModalTbody');
+            if (tbody) {
+                tbody.innerHTML = '';
+                
+                if(filtered.length === 0) {
+                    const colSpan = hasContext ? 7 : 6;
+                    tbody.innerHTML = `<tr><td colspan="${colSpan}" class="empty-state">無符合條件之明細。</td></tr>`;
+                } else {
+                    filtered.forEach(r => {
+                        const tr = document.createElement('tr');
+                        const safeUrl = (r.url && r.url.startsWith('http')) ? r.url : '#';
+                        const platformName = extractForumFromUrl(r.url);
+                        const linkHtml = safeUrl !== '#' ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--info-color);text-decoration:none;font-weight:bold;" title="前往原文">${escapeHtml(platformName)} ↗</a>` : escapeHtml(platformName);
+                        
+                        const compDef = state.metadata.defs.find(d => d.key === r.compGroup);
+                        const compName = compDef ? compDef.name : r.compGroup;
+                        const sourcesHtml = r.sources.join(', ');
+
+                        let hitsTd = '';
+                        if (hasContext) {
+                            let hitsHtml = '-';
+                            const ctx = options.auditContextMap[r.uid];
+                            if (ctx && ctx.matchedTerms && ctx.matchedTerms.length > 0) {
+                                const typeIcon = (ctx.type === 'complaint') ? '🚨' : (ctx.type === 'churn' ? '⚠' : '');
+                                hitsHtml = ctx.matchedTerms.map(h => `<span style="display:inline-block; background:var(--bg-base); border:1px solid var(--border-subtle); padding:1px 4px; border-radius:4px; font-size:0.7rem; color:var(--text-main); margin:1px; white-space:nowrap;">${typeIcon} ${escapeHtml(h)}</span>`).join('');
+                            }
+                            hitsTd = `<td>${hitsHtml}</td>`;
+                        }
+
+                        tr.innerHTML = `
+                            <td style="color:var(--text-dim);font-family:monospace;">${r.firstDate !== '-' ? r.firstDate.slice(5) : '-'}</td>
+                            <td>
+                                <span style="display:inline-block;background:var(--badge-bg);padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid var(--border-subtle);">${escapeHtml(compName)}</span>
+                                <div style="font-size:0.7rem; color:var(--text-dim); margin-top:2px; word-break:break-word;">${escapeHtml(r.display_product || r.product || '-')}</div>
+                            </td>
+                            <td><span style="color:var(--text-muted);font-weight:600;">${escapeHtml(r.issue)}</span></td>
+                            <td>
+                                <div class="summary-text" style="-webkit-line-clamp:3; margin-bottom:4px;" title="${escapeHtml(r.summary)}">${escapeHtml(r.summary)}</div>
+                                <div style="font-size:0.75rem; text-align:right;">${linkHtml}</div>
+                            </td>
+                            <td style="text-align:right;font-family:monospace;font-size:0.85rem;"><span style="color:var(--pos-green);">${r.currVol.p}</span>/<span style="color:var(--text-dim);">${r.currVol.m}</span>/<span style="color:var(--neg-red);font-weight:bold;">${r.currVol.n}</span> <br><span style="color:var(--text-main); font-size:0.75rem;">(總 ${r.currVol.tot})</span></td>
+                            ${hitsTd}
+                            <td style="text-align:right;">
+                                <div style="font-size:0.7rem;color:var(--text-dim);margin-bottom:2px;">${escapeHtml(sourcesHtml)}</div>
+                                <div style="font-family:monospace;font-size:0.7rem;color:var(--text-muted);">${escapeHtml(r.uid)}</div>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+
+            const overlay = document.getElementById('auditModalOverlay');
+            if(overlay) overlay.style.display = 'flex';
+        },
+
+        close() {
+            document.getElementById('auditModalOverlay').style.display = 'none';
+        },
+
+        focusAndClose() {
+            if (!this.currentFocusTarget) return;
+            
+            const catAnalysis = document.getElementById('catAnalysis');
+            const isAnalysisVisible = catAnalysis && catAnalysis.style.display !== 'none';
+            
+            if (!isAnalysisVisible) {
+                const warnEl = document.getElementById('auditModalWarning');
+                if (warnEl) warnEl.style.display = 'flex';
+                return;
+            }
+            
+            this.executeFocusAndScroll();
+        },
+        
+        executeFocusAndScroll() {
+            if (!this.currentFocusTarget) return;
+            
+            // 1. 執行聚焦
+            toggleIssueFocus(this.currentFocusTarget.compGroup, this.currentFocusTarget.issue);
+            
+            // 2. 關閉 Modal
+            this.close();
+            
+            // 3. Smooth scroll
+            setTimeout(() => {
+                const catAnalysis = document.getElementById('catAnalysis');
+                if (catAnalysis) {
+                    catAnalysis.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        },
+        
+        switchToExplorationAndFocus() {
+            if (typeof DashboardModeManager !== 'undefined') {
+                DashboardModeManager.setMode('exploration');
+            }
+            this.executeFocusAndScroll();
+        },
+
+        copyToClipboard() {
+            if (this.currentRecords.length === 0) {
+                alert('無資料可複製');
+                return;
+            }
+            const srcModule = document.getElementById('auditModalSource') ? document.getElementById('auditModalSource').textContent : '';
+            const tgtBrand = document.getElementById('auditModalTarget') ? document.getElementById('auditModalTarget').textContent : '';
+            const tgtIssue = document.getElementById('auditModalIssue') ? document.getElementById('auditModalIssue').textContent : '';
+            const dateRange = document.getElementById('auditModalDateRange') ? document.getElementById('auditModalDateRange').textContent : '';
+            const formulaText = document.getElementById('auditModalFormula') ? document.getElementById('auditModalFormula').textContent : '';
+
+            let text = `【輿情計算依據與數據追溯】\n`;
+            text += `來源：${srcModule}\n`;
+            text += `品牌：${tgtBrand}\n`;
+            text += `議題：${tgtIssue}\n`;
+            text += `分析期間：${dateRange}\n`;
+            if (formulaText) text += `勾稽計算：${formulaText}\n`;
+            text += `討論串數：${this.auditSummary ? this.auditSummary.uidCount : this.currentRecords.length} 串\n`;
+            text += `=========================================\n`;
+            
+            this.currentRecords.forEach((r, idx) => {
+                const compDef = window.currentCalcState && window.currentCalcState.metadata && window.currentCalcState.metadata.defs
+                    ? window.currentCalcState.metadata.defs.find(d => d.key === r.compGroup) : null;
+                const brandName = compDef ? compDef.name : (r.brand || r.compGroup);
+                const sourcesStr = (r.sources && r.sources.length > 0) ? r.sources.join(', ') : '-';
+                
+                text += `[#${idx+1}] ${r.firstDate !== '-' ? r.firstDate : '未知日期'}\n`;
+                text += `品牌：${brandName} (產品：${r.display_product || r.product || '-'})\n`;
+                text += `議題：${r.issue}\n`;
+                text += `摘要：${r.summary}\n`;
+                text += `聲量：負評 ${r.currVol.n} 則 (正 ${r.currVol.p} / 中 ${r.currVol.m} / 總 ${r.currVol.tot})\n`;
+                text += `UID：${r.uid}\n`;
+                text += `來源月份：${sourcesStr}\n`;
+                
+                if (this.options && this.options.auditContextMap) {
+                    const ctx = this.options.auditContextMap[r.uid];
+                    const matchedTerms = ctx ? ctx.matchedTerms : [];
+                    if (matchedTerms && matchedTerms.length > 0) text += `命中詞：${matchedTerms.join(', ')}\n`;
+                }
+                
+                text += `原文：${r.url || '無原文連結'}\n`;
+                text += `-----------------------------------------\n`;
+            });
+            navigator.clipboard.writeText(text).then(() => {
+                alert('明細已複製到剪貼簿！可直接貼至 Teams、LINE 或 Outlook。');
+            }).catch(err => {
+                alert('複製失敗，請檢查剪貼簿權限。');
+            });
+        }
+    };
+const PreferenceManager = {
+        PREF_KEY: 'sentiment_dashboard_ui_preferences',
+        SCHEMA_VERSION: 5,
+        _hasWarnedStorage: false,
+
+        load() {
+            const defaults = {
+                schemaVersion: this.SCHEMA_VERSION,
+                theme: 'dark',
+                mode: 'full',
+                visibleBlocks: ['channelSection', 'radarSection', 'churnCandidateSection', 'matrixSection', 'drilldownSection', 'top10PosCard', 'top10NegCard']
+            };
+
+            let saved = null;
+            try {
+                const str = localStorage.getItem(this.PREF_KEY);
+                if (str) {
+                    saved = JSON.parse(str);
+                    if (saved.schemaVersion !== this.SCHEMA_VERSION) {
+                        saved = null; // 版本不符直接廢棄
+                    }
+                }
+            } catch (e) {
+                saved = null; // JSON解析錯誤或存取被阻擋
+            }
+
+            // 嘗試遷舊版 Theme 鍵值 (如果沒有新偏好但有舊的)
+            if (!saved) {
+                try {
+                    const oldTheme = localStorage.getItem('dashboard_theme');
+                    if (oldTheme) {
+                        defaults.theme = oldTheme;
+                    }
+                } catch(e) {}
+            }
+
+            const finalPrefs = saved ? Object.assign({}, defaults, saved) : defaults;
+            
+            // 基礎資料型態防呆
+            if (typeof finalPrefs.theme !== 'string' || !['dark', 'light'].includes(finalPrefs.theme)) finalPrefs.theme = 'dark';
+            if (typeof finalPrefs.mode !== 'string' || !MODE_PRESETS[finalPrefs.mode]) finalPrefs.mode = 'full';
+            if (!Array.isArray(finalPrefs.visibleBlocks)) {
+                finalPrefs.visibleBlocks = MODE_PRESETS[finalPrefs.mode];
+            } else {
+                // 自動遷移與補齊新模組
+                if (!finalPrefs.visibleBlocks.includes('longTailSection') && (finalPrefs.mode === 'full' || finalPrefs.mode === 'risk')) {
+                    finalPrefs.visibleBlocks.push('longTailSection');
+                }
+
+            }
+
+            return finalPrefs;
+        },
+
+        save(prefs) {
+            try {
+                localStorage.setItem(this.PREF_KEY, JSON.stringify({
+                    schemaVersion: this.SCHEMA_VERSION,
+                    theme: prefs.theme,
+                    mode: prefs.mode,
+                    visibleBlocks: prefs.visibleBlocks
+                }));
+            } catch (e) {
+                if (!this._hasWarnedStorage) {
+                    console.warn("此瀏覽器目前無法保存介面偏好，本次操作不受影響。");
+                    this._hasWarnedStorage = true;
+                }
+            }
+        },
+
+        reset() {
+            if (!confirm("將恢復預設主題、模式與區塊配置，不會刪除已載入資料。是否繼續？")) return;
+            
+            try {
+                localStorage.removeItem(this.PREF_KEY);
+                // 順便清掉已知舊版鍵值，避免互相干擾
+                localStorage.removeItem('dashboard_theme');
+                localStorage.removeItem('dashboard_mode');
+            } catch (e) {
+                alert("本次已重設，但未能清除已保存偏好 (可能受到瀏覽器隱私限制)");
+            }
+
+            // 直接套用預設值 (Theme = dark, Mode = full)
+            ThemeManager.setTheme('dark', false); 
+            DashboardModeManager.setMode('full', false);
+            DashboardModeManager.updateGlobalFocusBanner();
+        }
+    };
+
+    const ThemeManager = {
+        currentTheme: 'dark',
+        init(themeStr) {
+            this.setTheme(themeStr || 'dark', false);
+        },
+        toggle() {
+            const next = this.currentTheme === 'dark' ? 'light' : 'dark';
+            this.setTheme(next, true);
+        },
+        setTheme(theme, savePref=true) {
+            this.currentTheme = theme;
+            document.documentElement.setAttribute('data-theme', theme);
+            
+            if (savePref && typeof DashboardModeManager !== 'undefined') {
+                DashboardModeManager.triggerSave();
+            }
+
+            const btn = document.getElementById('btnThemeToggle');
+            if (btn) {
+                btn.innerHTML = theme === 'dark' ? '🌗 淺色模式' : '🌑 深色模式';
+            }
+            if (window.currentCalcState && window.currentCalcState.metadata) {
+                if (typeof MatrixModule !== 'undefined' && MatrixModule.render) {
+                    ChurnRiskModule.render();
+                    MatrixModule.render();
+                }
+            }
+        }
+    };
+
+    // =========================================================================
+    // Dashboard Mode 情境切換管理器 (純 CSS 控制顯隱)
+    // =========================================================================
+    
+    // =========================================================================
+    // Block Visibility & Dashboard Mode Manager (Sprint A-0)
+    // =========================================================================
+    const BLOCK_DEFS = [
+        { id: 'channelSection', name: '通路聲量分佈', parentId: 'catCompetition' },
+        { id: 'radarSection', name: '品牌負評增加雷達', parentId: 'catRisk' },
+        { id: 'churnCandidateSection', name: '解約／申訴候選', parentId: 'catRisk' },
+        { id: 'longTailSection', name: '長尾風險追蹤', parentId: 'catRisk' },
+        { id: 'matrixSection', name: '議題聲量與正向占比矩陣', parentId: 'catAnalysis' },
+        { id: 'drilldownSection', name: '每日情緒聲量趨勢', parentId: 'catAnalysis' },
+        { id: 'top10PosCard', name: '正向 Top 10', parentId: 'catAnalysis' },
+        { id: 'top10NegCard', name: '負向 Top 10', parentId: 'catAnalysis' }
+    ];
+
+    const MODE_PRESETS = {
+        'full': ['channelSection', 'radarSection', 'churnCandidateSection', 'longTailSection', 'matrixSection', 'drilldownSection', 'top10PosCard', 'top10NegCard'],
+        'overview': ['channelSection', 'radarSection'],
+        'risk': ['radarSection', 'churnCandidateSection', 'longTailSection', 'top10NegCard'],
+        'exploration': ['matrixSection', 'drilldownSection', 'top10PosCard', 'top10NegCard']
+    };
+
+    const DashboardModeManager = {
+        currentMode: 'full',
+        currentBlocks: new Set(),
+        
+        init(prefs) {
+            this.currentMode = prefs.mode;
+            this.currentBlocks = new Set(prefs.visibleBlocks);
+            
+            const sel = document.getElementById('dashboardModeSelect');
+            if(sel) sel.value = this.currentMode;
+
+            this.updateUI();
+            this.updatePanelCheckboxState();
+        },
+
+        setMode(mode, savePref=true) {
+            this.currentMode = mode;
+            this.currentBlocks = new Set(MODE_PRESETS[mode]);
+            
+            const sel = document.getElementById('dashboardModeSelect');
+            if(sel) sel.value = mode;
+            
+            this.updateUI();
+            this.updatePanelCheckboxState();
+            
+            if (savePref) this.triggerSave();
+        },
+
+        toggleBlock(blockId, isVisible) {
+            if (isVisible) {
+                this.currentBlocks.add(blockId);
+            } else {
+                this.currentBlocks.delete(blockId);
+            }
+            this.checkCustomMode();
+            this.updateUI();
+            this.triggerSave();
+        },
+
+        checkCustomMode() {
+            const preset = new Set(MODE_PRESETS[this.currentMode]);
+            let isMatch = (preset.size === this.currentBlocks.size) && [...preset].every(val => this.currentBlocks.has(val));
+            
+            const modeText = document.getElementById('dashboardModeStatusText');
+            if (modeText) {
+                if (!isMatch) {
+                    modeText.innerHTML = `<span style="background:var(--neg-bg); color:var(--alert-color); border:1px solid var(--neg-red); padding:2px 6px; border-radius:4px; font-size:0.75rem; font-weight:700; white-space:nowrap;">已自訂</span>`;
+                } else {
+                    modeText.innerHTML = `<span style="background:var(--bg-card); color:var(--text-muted); border:1px solid var(--border-subtle); padding:2px 6px; border-radius:4px; font-size:0.75rem; font-weight:700; white-space:nowrap;">預設配置</span>`;
+                }
+            }
+        },
+
+        resetToPreset() {
+            this.setMode(this.currentMode, true);
+        },
+
+        triggerSave() {
+            PreferenceManager.save({
+                theme: ThemeManager.currentTheme,
+                mode: this.currentMode,
+                visibleBlocks: Array.from(this.currentBlocks)
+            });
+        },
+
+        updateUI() {
+            let catVisibility = {
+                'catCompetition': false,
+                'catRisk': false,
+                'catAnalysis': false
+            };
+
+            BLOCK_DEFS.forEach(b => {
+                const el = document.getElementById(b.id);
+                if (!el) return;
+                const isVis = this.currentBlocks.has(b.id);
+                el.style.display = isVis ? (b.id.includes('Card') ? 'flex' : 'block') : 'none';
+                if (isVis) catVisibility[b.parentId] = true;
+            });
+            
+            const tablesSec = document.querySelector('.tables-section');
+            if (tablesSec) {
+                const showPos = this.currentBlocks.has('top10PosCard');
+                const showNeg = this.currentBlocks.has('top10NegCard');
+                if (showPos && !showNeg || !showPos && showNeg) {
+                    tablesSec.style.gridTemplateColumns = '1fr';
+                } else {
+                    tablesSec.style.gridTemplateColumns = '1fr 1fr';
+                }
+            }
+
+            Object.keys(catVisibility).forEach(catId => {
+                const el = document.getElementById(catId);
+                if (el) el.style.display = catVisibility[catId] ? 'flex' : 'none';
+            });
+
+            this.updateGlobalFocusBanner();
+        },
+
+        updatePanelCheckboxState() {
+            BLOCK_DEFS.forEach(b => {
+                const chk = document.getElementById('chk_block_' + b.id);
+                if (chk) {
+                    chk.checked = this.currentBlocks.has(b.id);
+                }
+            });
+            const lbl = document.getElementById('panelModeLabel');
+            if (lbl) {
+                const sel = document.getElementById('dashboardModeSelect');
+                lbl.textContent = sel ? sel.options[sel.selectedIndex].text : this.currentMode;
+            }
+            this.checkCustomMode();
+        },
+
+        togglePanel() {
+            const panel = document.getElementById('blockSettingsPanel');
+            if (panel) {
+                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            }
+        },
+        
+        updateGlobalFocusBanner() {
+            const gb = document.getElementById('globalFocusBanner');
+            if (!gb) return;
+            
+            if (window.focusedIssue && !this.currentBlocks.has('matrixSection')) {
+                let fName = window.focusedIssue.compGroup;
+                if (window.currentCalcState && window.currentCalcState.metadata && window.currentCalcState.metadata.defs) {
+                    const found = window.currentCalcState.metadata.defs.find(d => d.key === window.focusedIssue.compGroup);
+                    if (found) fName = found.name;
+                }
+                document.getElementById('globalFocusTitle').textContent = `${fName} ｜ ${window.focusedIssue.issue}`;
+                gb.style.display = 'flex';
+            } else {
+                gb.style.display = 'none';
+            }
+        }
+    };
+
+
+    // === 初始化介面偏好 ===
+    const initialPrefs = PreferenceManager.load();
+    ThemeManager.init(initialPrefs.theme);
+    DashboardModeManager.init(initialPrefs);
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            const panel = document.getElementById('blockSettingsPanel');
+            if (panel && panel.style.display === 'block') panel.style.display = 'none';
+            if (typeof AuditDetailModal !== 'undefined') AuditDetailModal.close();
+            if (typeof LongTailHistoryModal !== 'undefined') LongTailHistoryModal.close();
+        }
+    });
+
+
+
+    const COMP_DEFINITIONS = {
+        mobile: [
+            { key: "cht", name: "中華電信", subtitle: "行動通訊" },
+            { key: "twm", name: "台灣大哥大", subtitle: "行動通訊" },
+            { key: "fet", name: "遠傳電信", subtitle: "行動通訊" }
+        ],
+        broadband: [
+            { key: "cht", name: "中華電信", subtitle: "HiNet / 光世代" },
+            { key: "broadband_comp", name: "有線電視/社區寬頻", subtitle: "寬頻上網" }
+        ],
+        media: [
+            { key: "cht", name: "中華電信", subtitle: "MOD / Hami Video" },
+            { key: "cable_tv", name: "有線電視", subtitle: "有線電視" },
+            { key: "telco_ott", name: "MyVideo / friDay影音", subtitle: "電信OTT" }
+        ]
+    };
+
+    const PLATFORM_COLORS = {
+        'Threads': '#f472b6',
+        'PTT': '#38bdf8',
+        'Facebook': '#3b5998',
+        '巴哈姆特': '#0ea5e9',
+        'Plurk': '#fb923c',
+        'Mobile01': '#4ade80',
+        'Dcard': '#0284c7',
+        'YouTube': '#ef4444',
+        '未知/其他': '#64748b'
+    };
+
+    function extractForumFromUrl(url) {
+        if (!url) return '未知/其他';
+        const u = url.toLowerCase();
+        if (u.includes('threads.com') || u.includes('threads.net')) return 'Threads';
+        if (u.includes('ptt.cc')) return 'PTT';
+        if (u.includes('facebook.com') || u.includes('fb.com')) return 'Facebook';
+        if (u.includes('gamer.com.tw')) return '巴哈姆特';
+        if (u.includes('plurk.com')) return 'Plurk';
+        if (u.includes('mobile01.com')) return 'Mobile01';
+        if (u.includes('dcard.tw')) return 'Dcard';
+        if (u.includes('youtube.com') || u.includes('youtu.be')) return 'YouTube';
+        return '未知/其他';
+    }
+
+    let allRecordsMap = new Map();
+    let loadedMonths = new Set();
+    let globalDateCompleteness = {}; 
+    let currentTab = 'mobile';
+    let selectedBrandKey = 'cht';
+    window.focusedIssue = null;
+    window.currentCalcState = {
+        metadata: null,
+        brandAgg: {},
+        issueAgg: new Map(),
+        channelAgg: {},
+        trendDaily: {},
+        top10Agg: { posList: [], negList: [] },
+        details: []
+    };
+
+    document.getElementById('fileIn').addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            let parsed;
+            try {
+                parsed = JSON.parse(ev.target.result);
+            } catch (err) {
+                alert("JSON 解析失敗: 檔案格式非有效 JSON。");
+                document.getElementById('fileIn').value = '';
+                return;
+            }
+
+            try {
+                // 1. 驗證 metadata.data_month (6碼)
+                const metadata = parsed.metadata || {};
+                const dataMonth = metadata.data_month;
+                if (!dataMonth || !/^\d{6}$/.test(dataMonth)) {
+                    throw new Error(`資料月份 (metadata.data_month) 缺失或不合法。需為六碼數字(如 202607)，目前值: ${dataMonth}`);
+                }
+
+                // 2. 驗證 records 是否為陣列
+                if (!parsed.records || !Array.isArray(parsed.records)) {
+                    throw new Error("找不到有效的 records 陣列資料。");
+                }
+
+                let tempRecordsMap = new Map();
+                let tempDateCompleteness = {};
+
+                if (metadata.date_completeness) {
+                    Object.assign(tempDateCompleteness, metadata.date_completeness);
+                } else if (metadata.date_range && metadata.date_range.length === 2) {
+                    let cur = new Date(metadata.date_range[0] + "T00:00:00Z");
+                    const stop = new Date(metadata.date_range[1] + "T00:00:00Z");
+                    while (cur <= stop) {
+                        tempDateCompleteness[cur.toISOString().split('T')[0]] = 'complete';
+                        cur.setUTCDate(cur.getUTCDate() + 1);
+                    }
+                }
+
+                // 3. 逐筆驗證 volumes.daily
+                for (let i = 0; i < parsed.records.length; i++) {
+                    const r = parsed.records[i];
+                    const uidDesc = r.uid ? `UID: ${r.uid}` : `第 ${i + 1} 筆紀錄`;
+                    if (!r.volumes || !r.volumes.daily) {
+                        throw new Error(`紀錄格式錯誤 (${uidDesc})：缺少 volumes.daily 節點。`);
+                    }
+
+                    let validDaily = {};
+                    for (let [dateStr, vols] of Object.entries(r.volumes.daily)) {
+                        if (!dateStr.replace(/-/g, '').startsWith(dataMonth)) {
+                            console.warn(`[異常警告] 發現跨月日期 ${dateStr} 於 ${dataMonth} 檔案中 (${uidDesc})，予以捨棄！`);
+                            continue;
+                        }
+                        if (!Array.isArray(vols)) {
+                            throw new Error(`紀錄格式錯誤 (${uidDesc})：日期 ${dateStr} 的聲量格式非陣列。`);
+                        }
+                        validDaily[dateStr] = vols;
+                        if (!tempDateCompleteness[dateStr]) {
+                            tempDateCompleteness[dateStr] = 'complete';
+                        }
+                    }
+
+                    r._source_month = dataMonth;
+                    r.volumes.daily = validDaily;
+                    tempRecordsMap.set(`${dataMonth}_${r.uid}`, r);
+                }
+
+                // 4. 原子更新 (Atomic Update) - 全部驗證通過後才寫入全域狀態
+                const isReplace = loadedMonths.has(dataMonth);
+                if (isReplace) {
+                    const toDelete = [];
+                    allRecordsMap.forEach((rec, key) => {
+                        if (rec._source_month === dataMonth) toDelete.push(key);
+                    });
+                    toDelete.forEach(key => allRecordsMap.delete(key));
+                    
+                    Object.keys(globalDateCompleteness).forEach(d => {
+                        if(d.replace(/-/g, '').startsWith(dataMonth)) {
+                            delete globalDateCompleteness[d];
+                        }
+                    });
+                } else {
+                    loadedMonths.add(dataMonth);
+                }
+
+                tempRecordsMap.forEach((rec, key) => allRecordsMap.set(key, rec));
+                Object.assign(globalDateCompleteness, tempDateCompleteness);
+
+                const btnClear = document.getElementById('btnClearData');
+                if(btnClear) btnClear.disabled = false;
+                
+                window.focusedIssue = null;
+                updateFooterLoadedInfo();
+                autoExpandDateRange();
+                applyFiltersAndRender();
+                
+                // 更新畫面成功後才提示
+                alert(isReplace ? `同月份 (${dataMonth}) 新版資料已替換！` : `資料載入成功！新增月份：${dataMonth}`);
+
+            } catch (err) {
+                // 驗證失敗：拋出警告且完全保留原有 state，不進行任何替換或刪除
+                alert("資料載入終止: " + err.message);
+            } finally {
+                document.getElementById('fileIn').value = '';
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    function clearData() {
+        allRecordsMap.clear();
+        loadedMonths.clear();
+        globalDateCompleteness = {};
+        window.focusedIssue = null;
+        document.getElementById('dateStart').value = '';
+        document.getElementById('dateEnd').value = '';
+        document.getElementById('keywordInput').value = '';
+        const btnClear = document.getElementById('btnClearData');
+        if(btnClear) btnClear.disabled = true;
+        document.getElementById('fileIn').value = '';
+        
+        updateFooterLoadedInfo();
+        document.getElementById('kpiCards').innerHTML = '<div class="empty-state">請載入資料</div>';
+        document.getElementById('trendSvg').innerHTML = '';
+        document.getElementById('posTbody').innerHTML = '';
+        document.getElementById('negTbody').innerHTML = '';
+        document.getElementById('channelSection').style.display = 'none';
+        
+        const radarTbody = document.getElementById('radarTbody'); if(radarTbody) radarTbody.innerHTML = '';
+        const radarEmpty = document.getElementById('radarEmptyMsg'); if(radarEmpty) { radarEmpty.style.display = 'block'; radarEmpty.textContent = '請套用篩選以計算雷達資料。'; }
+        const radarTable = document.getElementById('radarTableWrap'); if(radarTable) radarTable.style.display = 'none';
+
+        ChurnRiskModule.clear();
+        LongTailModule.clear();
+        MatrixModule.clear();
+                
+        ['trendTargetText','posTableTargetText','negTableTargetText','filterSummaryText'].forEach(id => {
+            const el = document.getElementById(id); if(el) el.textContent = '';
+        });
+        document.getElementById('globalThreads').textContent = '0';
+        document.getElementById('globalVol').textContent = '0';
+        window.currentCalcState = {
+            metadata: null,
+            brandAgg: {},
+            issueAgg: new Map(),
+            channelAgg: {},
+            trendDaily: {},
+            top10Agg: { posList: [], negList: [] },
+            details: []
+        };
+    }
+
+    function updateFooterLoadedInfo() {
+        const mArr = Array.from(loadedMonths).sort();
+        const el = document.getElementById('loadedMonths');
+        if(el) el.textContent = mArr.length > 0 ? mArr.join(', ') : '無';
+    }
+
+    function clearKeyword() {
+        document.getElementById('keywordInput').value = '';
+        applyFiltersAndRender();
+    }
+
+    function autoExpandDateRange() {
+        if (allRecordsMap.size === 0) return;
+        let allDates = [];
+        allRecordsMap.forEach(r => {
+            allDates.push(...Object.keys(r.volumes.daily));
+        });
+        if (allDates.length === 0) return;
+        allDates.sort();
+        const minD = allDates[0];
+        const maxD = allDates[allDates.length - 1];
+        
+        const dsInput = document.getElementById('dateStart');
+        const deInput = document.getElementById('dateEnd');
+        if(dsInput && !dsInput.value) dsInput.value = minD;
+        if(deInput && !deInput.value) deInput.value = maxD;
+    }
+
+    function switchTab(tabKey) {
+        currentTab = tabKey;
+        window.focusedIssue = null;
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        const tabBtn = document.getElementById(`tab-${tabKey}`);
+        if(tabBtn) tabBtn.classList.add('active');
+        
+        const mediaExtra = document.getElementById('mediaExtra');
+        if(mediaExtra) mediaExtra.style.display = (tabKey === 'media') ? 'flex' : 'none';
+
+        selectedBrandKey = COMP_DEFINITIONS[tabKey][0].key;
+        applyFiltersAndRender();
+    }
+
+    function selectBrand(brandKey) {
+        selectedBrandKey = brandKey;
+        if (window.focusedIssue && window.focusedIssue.compGroup !== brandKey) {
+            window.focusedIssue = null;
+        }
+        applyFiltersAndRender();
+    }
+
+    function addDays(dateStr, days) {
+        let d = new Date(dateStr + "T00:00:00Z");
+        d.setUTCDate(d.getUTCDate() + days);
+        return d.toISOString().split('T')[0];
+    }
+
+    function diffDays(startStr, endStr) {
+        let d1 = new Date(startStr + "T00:00:00Z");
+        let d2 = new Date(endStr + "T00:00:00Z");
+        return Math.round((d2 - d1) / 86400000) + 1;
+    }
+
+    function calcPN(pos, neg, neu, total) {
+        if (neg > 0) return { val: pos / neg, text: (pos / neg).toFixed(2), class: (pos/neg)>=1 ? 'pn-pos' : 'pn-neg' };
+        if (pos > 0 && neg === 0) return { val: null, text: '無負評', class: 'pn-pos' };
+        if (pos === 0 && neg === 0 && neu > 0) return { val: null, text: '僅中立', class: 'pn-state' };
+        return { val: null, text: '無聲量', class: 'pn-state' };
+    }
+
+    // =========================================================================
+    // 統一聚合層 (Unified Aggregation Layer - Single Source of Truth)
+    // 集中完成 brandAgg / issueAgg / channelAgg / top10Agg / trendDaily
+    // 下游模組 (Channel / Radar / Matrix / Top10) 嚴禁各自重算或修改 State
+    // =========================================================================
+    function recalculateState(recordsMap, options) {
+        const {
+            currentTab, selectedBrandKey, defs, allowedGroupKeys,
+            ds, de, prevDs, prevDe, hasPrevData, kw, loadedMonthsArr, focusedIssue
+        } = options;
+
+        const brandAgg = {};
+        const channelRaw = {};
+        defs.forEach(d => {
+            brandAgg[d.key] = {
+                def: d,
+                curr: { pos: 0, neu: 0, neg: 0, total: 0, threadUids: new Set() },
+                prev: { pos: 0, neu: 0, neg: 0, total: 0, threadUids: new Set() }
+            };
+            channelRaw[d.key] = { counts: {}, totalVol: 0 };
+        });
+
+        const issueAgg = new Map();
+        const trendDaily = {};
+        const activeRowsForTop10 = [];
+        const details = [];
+        let grandTotalVol = 0;
+        let globalActiveThreadUids = new Set();
+        let uidMergedMap = new Map();
+
+        // Pass 1: 依 UID 合併選定期間與前期之每日聲量
+        recordsMap.forEach((r) => {
+            const mapping = r.mapping || {};
+            if (mapping.segment !== currentTab || mapping.status !== 'confirmed') return;
+
+            const cg = mapping.comp_group;
+            if (!allowedGroupKeys.has(cg)) return;
+
+            if (kw) {
+                const searchTarget = `${r.summary} ${r.issue} ${r.brand} ${r.product}`.toLowerCase();
+                if (!searchTarget.includes(kw)) return;
+            }
+
+            let currP = 0, currM = 0, currN = 0;
+            let prevP = 0, prevM = 0, prevN = 0;
+            let rowFirstCurrDate = null;
+
+            if (r.volumes && r.volumes.daily) {
+                for (let [d, vals] of Object.entries(r.volumes.daily)) {
+                    if ((!ds || d >= ds) && (!de || d <= de)) {
+                        currP += vals[0]; currM += vals[1]; currN += vals[2];
+                        if (!rowFirstCurrDate) rowFirstCurrDate = d;
+                        
+                        if (cg === selectedBrandKey) {
+                            const matchFocus = !focusedIssue || (focusedIssue.compGroup === cg && focusedIssue.issue === r.issue);
+                            if (matchFocus) {
+                                if (!trendDaily[d]) trendDaily[d] = { pos: 0, neg: 0 };
+                                trendDaily[d].pos += vals[0];
+                                trendDaily[d].neg += vals[2];
+                            }
+                        }
+                    }
+                    if (hasPrevData && d >= prevDs && d <= prevDe) {
+                        prevP += vals[0]; prevM += vals[1]; prevN += vals[2];
+                    }
+                }
+            }
+
+            const currTotal = currP + currM + currN;
+            const prevTotal = prevP + prevM + prevN;
+
+            if (currTotal > 0 || prevTotal > 0) {
+                if (!uidMergedMap.has(r.uid)) {
+                    uidMergedMap.set(r.uid, {
+                        uid: r.uid,
+                        brand: r.brand,
+                        product: r.product || '-',
+                        display_product: r.display_product || r.product || '-',
+                        issue: r.issue,
+                        summary: r.summary,
+                        url: r.url,
+                        compGroup: cg,
+                        sources: [],
+                        monthlyNeg: new Map(), // 記錄各來源月的負評數
+                        currVol: { p: 0, m: 0, n: 0, tot: 0 },
+                        prevVol: { p: 0, m: 0, n: 0, tot: 0 },
+                        firstDate: rowFirstCurrDate || ds || '-'
+                    });
+                }
+                
+                let s = uidMergedMap.get(r.uid);
+                const srcStr = `${r._source_month}(${cg})`;
+                if (!s.sources.includes(srcStr)) {
+                    s.sources.push(srcStr);
+                }
+                
+                let fileMonthNeg = 0;
+                if (r.volumes && r.volumes.daily) {
+                    for (const vols of Object.values(r.volumes.daily)) {
+                        fileMonthNeg += vols[2];
+                    }
+                }
+                if (fileMonthNeg > 0) {
+                    s.monthlyNeg.set(r._source_month, (s.monthlyNeg.get(r._source_month) || 0) + fileMonthNeg);
+                }
+                
+                if (currTotal > 0) {
+                    s.currVol.p += currP; s.currVol.m += currM; s.currVol.n += currN; s.currVol.tot += currTotal;
+                }
+                if (prevTotal > 0) {
+                    s.prevVol.p += prevP; s.prevVol.m += prevM; s.prevVol.n += prevN; s.prevVol.tot += prevTotal;
+                }
+            }
+        });
+
+        // Pass 2: 統一建立 brandAgg, channelAgg, issueAgg, top10Agg
+        uidMergedMap.forEach((s, uid) => {
+            const cg = s.compGroup;
+            Object.freeze(s.currVol);
+            Object.freeze(s.prevVol);
+            Object.freeze(s.sources);
+            Object.freeze(s);
+
+            if (s.currVol.tot > 0) {
+                brandAgg[cg].curr.pos += s.currVol.p;
+                brandAgg[cg].curr.neu += s.currVol.m;
+                brandAgg[cg].curr.neg += s.currVol.n;
+                brandAgg[cg].curr.total += s.currVol.tot;
+                brandAgg[cg].curr.threadUids.add(uid);
+                
+                grandTotalVol += s.currVol.tot;
+                globalActiveThreadUids.add(uid);
+
+                // 通路聚合 (僅納入本期 currVol.tot > 0 之活躍討論串)
+                const forum = extractForumFromUrl(s.url);
+                if (!channelRaw[cg].counts[forum]) channelRaw[cg].counts[forum] = 0;
+                channelRaw[cg].counts[forum] += s.currVol.tot;
+                channelRaw[cg].totalVol += s.currVol.tot;
+
+                // Top 10 候選列 (依選中品牌與聚焦議題)
+                if (cg === selectedBrandKey) {
+                    const matchFocus = !focusedIssue || (focusedIssue.compGroup === cg && focusedIssue.issue === s.issue);
+                    if (matchFocus) {
+                        activeRowsForTop10.push(Object.freeze({
+                            uid: s.uid,
+                            date: s.firstDate,
+                            brand: s.brand,
+                            issue: s.issue,
+                            summary: s.summary,
+                            url: s.url,
+                            posVol: s.currVol.p,
+                            negVol: s.currVol.n
+                        }));
+                    }
+                }
+            }
+
+            if (s.prevVol.tot > 0) {
+                brandAgg[cg].prev.pos += s.prevVol.p;
+                brandAgg[cg].prev.neu += s.prevVol.m;
+                brandAgg[cg].prev.neg += s.prevVol.n;
+                brandAgg[cg].prev.total += s.prevVol.tot;
+                brandAgg[cg].prev.threadUids.add(uid);
+            }
+
+            // 議題聚合 (issueAgg - 統一供應 Radar 與 Matrix)
+            if (s.currVol.tot > 0 || s.prevVol.tot > 0) {
+                const iKey = `${cg}||${s.issue}`;
+                if (!issueAgg.has(iKey)) {
+                    let compDef = defs.find(d => d.key === cg);
+                    const compName = compDef ? compDef.name : cg;
+                    issueAgg.set(iKey, {
+                        key: iKey,
+                        compGroup: cg,
+                        compName: compName,
+                        issue: s.issue,
+                        pos: 0,
+                        neu: 0,
+                        neg: 0,
+                        tot: 0,
+                        currNeg: 0,
+                        prevNeg: 0,
+                        increase: 0,
+                        currVol: { p: 0, m: 0, n: 0, tot: 0 },
+                        prevVol: { p: 0, m: 0, n: 0, tot: 0 },
+                        topThread: null,
+                        monthlyNegMap: new Map(),
+                        monthlySamples: new Map(), // 紀錄各月份代表貼文
+                        cumulativeNeg: 0,
+                        firstMonth: null,
+                        lastMonth: null,
+                        sources: [],
+                        isChurnCandidate: false
+                    });
+                }
+                let item = issueAgg.get(iKey);
+                item.pos += s.currVol.p;
+                item.neu += s.currVol.m;
+                item.neg += s.currVol.n;
+                item.tot += s.currVol.tot;
+                item.currNeg += s.currVol.n;
+                item.prevNeg += s.prevVol.n;
+                item.increase = item.currNeg - item.prevNeg;
+
+                item.currVol.p += s.currVol.p;
+                item.currVol.m += s.currVol.m;
+                item.currVol.n += s.currVol.n;
+                item.currVol.tot += s.currVol.tot;
+
+                item.prevVol.p += s.prevVol.p;
+                item.prevVol.m += s.prevVol.m;
+                item.prevVol.n += s.prevVol.n;
+                item.prevVol.tot += s.prevVol.tot;
+                
+                if (s.monthlyNeg) {
+                    s.monthlyNeg.forEach((negCount, mth) => {
+                        item.cumulativeNeg += negCount;
+                        item.monthlyNegMap.set(mth, (item.monthlyNegMap.get(mth) || 0) + negCount);
+                        // 紀錄該月份的一筆代表貼文 (若有負評)
+                        if (!item.monthlySamples.has(mth) || s.currVol.n > item.monthlySamples.get(mth).currVol.n) {
+                            item.monthlySamples.set(mth, s);
+                        }
+                    });
+                }
+
+                if (s.sources && Array.isArray(s.sources)) {
+                    s.sources.forEach(src => {
+                        if (!item.sources.includes(src)) {
+                            item.sources.push(src);
+                        }
+                    });
+                }
+
+                if (s.currVol.n > 0) {
+                    if (!item.topThread || s.currVol.n > item.topThread.currVol.n) {
+                        item.topThread = s;
+                    }
+                }
+            }
+
+            details.push(s);
+        });
+
+        // 計算 issueAgg 衍生比率並凍結所有議題聚合項目
+        issueAgg.forEach((item) => {
+            if (item.monthlyNegMap && item.monthlyNegMap.size > 0) {
+                const months = Array.from(item.monthlyNegMap.keys()).sort();
+                item.firstMonth = months[0];
+                item.lastMonth = months[months.length - 1];
+            } else {
+                item.firstMonth = '-';
+                item.lastMonth = '-';
+            }
+            const pnSum = item.pos + item.neg;
+            item.posRateTotal = item.tot > 0 ? (item.pos / item.tot) * 100 : 0;
+            item.negRateTotal = item.tot > 0 ? (item.neg / item.tot) * 100 : 0;
+            item.posRatePolarized = pnSum > 0 ? (item.pos / pnSum) * 100 : 0;
+            item.negRatePolarized = pnSum > 0 ? (item.neg / pnSum) * 100 : 0;
+            item.isPureNeutral = (pnSum === 0 && item.neu > 0);
+            item.pn = Object.freeze(calcPN(item.pos, item.neg, item.neu, item.tot));
+            Object.freeze(item.currVol);
+            Object.freeze(item.prevVol);
+            Object.freeze(item);
+        });
+
+        // 整理並凍結 channelAgg
+        const channelAgg = {};
+        defs.forEach(d => {
+            const raw = channelRaw[d.key];
+            const items = Object.keys(raw.counts)
+                .map(k => Object.freeze({
+                    name: k,
+                    vol: raw.counts[k],
+                    pct: raw.totalVol > 0 ? (raw.counts[k] / raw.totalVol * 100) : 0,
+                    color: PLATFORM_COLORS[k] || PLATFORM_COLORS['未知/其他']
+                }))
+                .sort((a, b) => b.vol - a.vol);
+            channelAgg[d.key] = Object.freeze({
+                totalVol: raw.totalVol,
+                items: Object.freeze(items)
+            });
+            Object.freeze(brandAgg[d.key].curr);
+            Object.freeze(brandAgg[d.key].prev);
+            Object.freeze(brandAgg[d.key]);
+        });
+        channelAgg.selected = channelAgg[selectedBrandKey] || Object.freeze({ totalVol: 0, items: Object.freeze([]) });
+
+        // 整理並凍結 top10Agg
+        const posList = activeRowsForTop10.filter(r => r.posVol > 0).sort((a, b) => b.posVol - a.posVol).slice(0, 10);
+        const negList = activeRowsForTop10.filter(r => r.negVol > 0).sort((a, b) => b.negVol - a.negVol).slice(0, 10);
+        const top10Agg = Object.freeze({
+            posList: Object.freeze(posList),
+            negList: Object.freeze(negList),
+            allRows: Object.freeze(activeRowsForTop10)
+        });
+
+        const metadata = Object.freeze({
+            timestamp: new Date().toISOString(),
+            currRange: Object.freeze({ start: ds, end: de }),
+            prevRange: hasPrevData ? Object.freeze({ start: prevDs, end: prevDe }) : null,
+            hasPrevData: hasPrevData,
+            keyword: kw,
+            segment: currentTab,
+            selectedBrandKey: selectedBrandKey,
+            compGroups: Object.freeze(Array.from(allowedGroupKeys)),
+            defs: Object.freeze(defs.map(d => Object.freeze({ ...d }))),
+            loadedMonths: Object.freeze(loadedMonthsArr)
+        });
+
+        return Object.freeze({
+            metadata,
+            brandAgg: Object.freeze(brandAgg),
+            issueAgg,
+            channelAgg: Object.freeze(channelAgg),
+            trendDaily: Object.freeze(trendDaily),
+            top10Agg,
+            details: Object.freeze(details),
+            grandTotalVol,
+            globalActiveThreadsCount: globalActiveThreadUids.size
+        });
+    }
+
+    function applyFiltersAndRender() {
+        if (allRecordsMap.size === 0) return;
+
+        let ds = document.getElementById('dateStart').value;
+        let de = document.getElementById('dateEnd').value;
+        if(ds && de && ds > de) {
+            let temp = ds; ds = de; de = temp;
+            document.getElementById('dateStart').value = ds;
+            document.getElementById('dateEnd').value = de;
+        }
+
+        let prevDs = null, prevDe = null;
+        let days = 0;
+        let hasPrevData = false;
+
+        if (ds && de) {
+            days = diffDays(ds, de);
+            prevDe = addDays(ds, -1);
+            prevDs = addDays(prevDe, -days + 1);
+            
+            hasPrevData = true;
+            let cur = new Date(prevDs + "T00:00:00Z");
+            let stop = new Date(prevDe + "T00:00:00Z");
+            while(cur <= stop) {
+                let dStr = cur.toISOString().split('T')[0];
+                if (globalDateCompleteness[dStr] !== 'complete') {
+                    hasPrevData = false;
+                    break;
+                }
+                cur.setUTCDate(cur.getUTCDate() + 1);
+            }
+        }
+
+        const kwInput = document.getElementById('keywordInput');
+        const kw = kwInput ? kwInput.value.trim().toLowerCase() : '';
+        const chkGlobal = document.getElementById('chkGlobalOtt');
+        const includeGlobalOtt = chkGlobal ? chkGlobal.checked : false;
+
+        let defs = [...COMP_DEFINITIONS[currentTab]];
+        if (currentTab === 'media' && includeGlobalOtt) {
+            defs.push({ key: "global_other_ott", name: "國際/其他 OTT", subtitle: "Netflix / Disney+" });
+        }
+        const allowedGroupKeys = new Set(defs.map(d => d.key));
+
+        if(!allowedGroupKeys.has(selectedBrandKey)) {
+            selectedBrandKey = defs[0].key;
+        }
+
+        // 呼叫唯一聚合管線，產出凍結之 currentCalcState
+        window.currentCalcState = recalculateState(allRecordsMap, {
+            currentTab,
+            selectedBrandKey,
+            defs,
+            allowedGroupKeys,
+            ds,
+            de,
+            prevDs,
+            prevDe,
+            hasPrevData,
+            kw,
+            loadedMonthsArr: Array.from(loadedMonths),
+            focusedIssue: window.focusedIssue
+        });
+
+        const state = window.currentCalcState;
+
+        const elThreads = document.getElementById('globalThreads'); if(elThreads) elThreads.textContent = state.globalActiveThreadsCount;
+        const elVol = document.getElementById('globalVol'); if(elVol) elVol.textContent = state.grandTotalVol;
+
+        const kwInfo = kw ? ` | 關鍵字: "${kw}"` : '';
+        const elSummary = document.getElementById('filterSummaryText');
+        if(elSummary) {
+            elSummary.innerHTML = `本期: ${ds||'全期'} ~ ${de||'全期'} <span style="margin:0 8px;color:#38bdf8;">|</span> 前期: ${hasPrevData ? prevDs + ' ~ ' + prevDe : '資料不足'}${kwInfo}`;
+        }
+
+        const selDef = defs.find(d => d.key === selectedBrandKey);
+        const selName = selDef ? selDef.name : '';
+        const focusSuffix = window.focusedIssue ? ` ｜ 🎯 聚焦議題：${window.focusedIssue.issue}` : '';
+        const elTrend = document.getElementById('trendTargetText'); if(elTrend) elTrend.textContent = `(${selName}${focusSuffix})`;
+        const elPos = document.getElementById('posTableTargetText'); if(elPos) elPos.textContent = `(${selName}${focusSuffix})`;
+        const elNeg = document.getElementById('negTableTargetText'); if(elNeg) elNeg.textContent = `(${selName}${focusSuffix})`;
+
+        // 調度各下游模組（皆唯讀讀取統一聚合層）
+        renderKpiCards(state.metadata.defs, state.brandAgg, state.metadata.hasPrevData);
+        renderTrendSvg(state.trendDaily, ds, de);
+        renderTop10Tables(state.top10Agg);
+        renderChannelDistribution(state.channelAgg);
+        updateRadar();
+        ChurnRiskModule.render();
+        LongTailModule.render();
+        MatrixModule.render();
+                
+        const analysisFocusBanner = document.getElementById('analysisFocusBanner');
+        if (analysisFocusBanner) {
+            if (window.focusedIssue) {
+                const fDef = defs.find(d => d.key === window.focusedIssue.compGroup);
+                const fName = fDef ? fDef.name : window.focusedIssue.compGroup;
+                document.getElementById('analysisFocusTitle').textContent = `${fName} ｜ ${window.focusedIssue.issue}`;
+                analysisFocusBanner.style.display = 'flex';
+            } else {
+                analysisFocusBanner.style.display = 'none';
+            }
+        }
+    }
+
+    function renderKpiCards(defs, brandAgg, hasPrevData) {
+        const container = document.getElementById('kpiCards');
+        if(!container) return;
+        container.innerHTML = '';
+
+        defs.forEach(d => {
+            const s = brandAgg[d.key];
+            const currPN = calcPN(s.curr.pos, s.curr.neg, s.curr.neu, s.curr.total);
+            const prevPN = calcPN(s.prev.pos, s.prev.neg, s.prev.neu, s.prev.total);
+
+            let pnDiffHtml = '';
+            if (!hasPrevData) {
+                pnDiffHtml = '<span style="color:var(--text-dim);">前期資料不足</span>';
+            } else if (currPN.val !== null && prevPN.val !== null) {
+                const diff = currPN.val - prevPN.val;
+                const sign = diff > 0 ? '+' : '';
+                const col = diff > 0 ? 'var(--pos-green)' : (diff < 0 ? 'var(--neg-red)' : 'var(--text-muted)');
+                pnDiffHtml = `較前期 <span style="color:${col}">${sign}${diff.toFixed(2)}</span>`;
+            } else {
+                pnDiffHtml = '<span style="color:var(--text-dim);">無法比較</span>';
+            }
+
+            let volDiffHtml = '';
+            if (!hasPrevData) {
+                volDiffHtml = '前期資料不足';
+            } else if (s.prev.total === 0 && s.curr.total > 0) {
+                volDiffHtml = `+${s.curr.total} (前期為0)`;
+            } else if (s.prev.total === 0 && s.curr.total === 0) {
+                volDiffHtml = `0 (不適用)`;
+            } else {
+                const vDiff = s.curr.total - s.prev.total;
+                const vPct = (vDiff / s.prev.total) * 100;
+                const sign = vDiff > 0 ? '+' : '';
+                volDiffHtml = `${sign}${vDiff} (${sign}${vPct.toFixed(1)}%)`;
+            }
+
+            const isSelected = d.key === selectedBrandKey;
+            
+            const card = document.createElement('div');
+            card.className = `card ${isSelected ? 'selected' : ''}`;
+            card.onclick = () => selectBrand(d.key);
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">${d.name} <button class="btn-secondary" style="padding:2px 6px; font-size:0.7rem; margin-left:8px;" onclick="event.stopPropagation(); AuditDetailModal.open({
+                                sourceModule: '品牌 KPI 卡',
+                                targetBrand: '${d.name} (${d.subtitle})',
+                                targetIssue: '全議題',
+                                compGroupKey: '${d.key}',
+                                expectedStats: { pos: ${s.curr.pos}, neg: ${s.curr.neg}, tot: ${s.curr.total} },
+                                formulaType: 'total',
+                                filterFn: r => r.compGroup === '${d.key}' && r.currVol.tot > 0
+                            })">🔍 依據</button></div>
+                        <div style="font-size:0.75rem; color:var(--text-dim); margin-top:2px;">${d.subtitle}</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="pn-box">
+                        <span class="pn-label">PN 好感比</span>
+                        <div class="pn-value ${currPN.class}">${currPN.text}</div>
+                        <div class="pn-diff">${pnDiffHtml}</div>
+                    </div>
+                    <div class="vol-box">
+                        <span style="color:var(--pos-green);">正：${s.curr.pos}</span>
+                        <span style="color:var(--neg-red);">負：${s.curr.neg}</span>
+                        <span style="color:var(--text-dim);">中：${s.curr.neu}</span>
+                    </div>
+                </div>
+                <div class="pop-stats">
+                    <span>活躍討論: ${s.curr.threadUids.size} 串</span>
+                    <span>聲量增減: ${volDiffHtml}</span>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function renderTrendSvg(trendData, ds, de) {
+        const svg = document.getElementById('trendSvg');
+        if(!svg) return;
+        svg.innerHTML = '';
+
+        let dates = Object.keys(trendData).sort();
+        let dStart = ds, dEnd = de;
+        if(!dStart && dates.length > 0) dStart = dates[0];
+        if(!dEnd && dates.length > 0) dEnd = dates[dates.length-1];
+
+        if(!dStart || !dEnd) {
+            svg.innerHTML = '<text x="500" y="120" fill="var(--text-dim)" text-anchor="middle">無期間資訊</text>';
+            return;
+        }
+
+        let fullDates = [];
+        let cur = new Date(dStart + "T00:00:00Z");
+        const stop = new Date(dEnd + "T00:00:00Z");
+        while(cur <= stop) {
+            fullDates.push(cur.toISOString().split('T')[0]);
+            cur.setUTCDate(cur.getUTCDate() + 1);
+        }
+
+        if(fullDates.length < 2) {
+            svg.innerHTML = '<text x="500" y="120" fill="var(--text-dim)" text-anchor="middle">期間過短或無資料</text>';
+            return;
+        }
+
+        let maxVal = 10;
+        fullDates.forEach(d => {
+            if(trendData[d]) {
+                if(trendData[d].pos > maxVal) maxVal = trendData[d].pos;
+                if(trendData[d].neg > maxVal) maxVal = trendData[d].neg;
+            }
+        });
+        maxVal = Math.ceil(maxVal / 10) * 10;
+
+        const W = 1000, H = 240;
+        const padL = 50, padR = 25, padT = 20, padB = 35;
+        const chartW = W - padL - padR, chartH = H - padT - padB;
+
+        const getX = idx => padL + (idx / (fullDates.length - 1)) * chartW;
+        const getY = val => (H - padB) - (val / maxVal) * chartH;
+
+        let gridHtml = '';
+        [0, 0.5, 1.0].forEach(ratio => {
+            const yPos = getY(maxVal * ratio);
+            gridHtml += `
+                <line x1="${padL}" y1="${yPos}" x2="${W - padR}" y2="${yPos}" class="chart-axis-line" />
+                <text x="${padL - 10}" y="${yPos + 4}" class="chart-tick-text" text-anchor="end">${Math.round(maxVal * ratio)}</text>
+            `;
+        });
+
+        const step = Math.ceil(fullDates.length / 8);
+        fullDates.forEach((d, idx) => {
+            if (idx % step === 0 || idx === fullDates.length - 1) {
+                const xPos = getX(idx);
+                gridHtml += `
+                    <line x1="${xPos}" y1="${H - padB}" x2="${xPos}" y2="${H - padB + 5}" stroke="var(--svg-grid)" stroke-width="1" />
+                    <text x="${xPos}" y="${H - padB + 18}" class="chart-tick-text" text-anchor="middle">${d.slice(5)}</text>
+                `;
+            }
+        });
+
+        let ptsPos = [], ptsNeg = [];
+        let segmentsP = [], segmentsN = [];
+        
+        fullDates.forEach((d, i) => {
+            if (trendData[d]) {
+                ptsPos.push(`${getX(i).toFixed(1)},${getY(trendData[d].pos).toFixed(1)}`);
+                ptsNeg.push(`${getX(i).toFixed(1)},${getY(trendData[d].neg).toFixed(1)}`);
+            } else {
+                if(ptsPos.length > 0) { segmentsP.push([...ptsPos]); ptsPos = []; }
+                if(ptsNeg.length > 0) { segmentsN.push([...ptsNeg]); ptsNeg = []; }
+            }
+        });
+        if(ptsPos.length > 0) segmentsP.push(ptsPos);
+        if(ptsNeg.length > 0) segmentsN.push(ptsNeg);
+
+        let polylinesHtml = '';
+        segmentsP.forEach(seg => {
+            if(seg.length>1) polylinesHtml += `<polyline fill="none" stroke="#22c55e" stroke-width="2" points="${seg.join(' ')}" />`;
+        });
+        segmentsN.forEach(seg => {
+            if(seg.length>1) polylinesHtml += `<polyline fill="none" stroke="#ef4444" stroke-width="2" points="${seg.join(' ')}" />`;
+        });
+
+        let currentBrandName = '品牌';
+        if (window.currentCalcState && window.currentCalcState.metadata) {
+            const defs = window.currentCalcState.metadata.defs || [];
+            const found = defs.find(d => d.key === selectedBrandKey);
+            if (found) currentBrandName = found.name;
+        }
+
+        let dotsHtml = '';
+        fullDates.forEach((d, idx) => {
+            if(trendData[d]) {
+                const x = getX(idx).toFixed(1);
+                const yPos = getY(trendData[d].pos).toFixed(1);
+                const yNeg = getY(trendData[d].neg).toFixed(1);
+                const pVal = trendData[d].pos;
+                const nVal = trendData[d].neg;
+                dotsHtml += `
+                    <circle cx="${x}" cy="${yPos}" r="4" class="chart-point" fill="#22c55e" data-date="${d}" data-pos="${pVal}" data-neg="${nVal}"
+                        onmouseover="showTrendTooltip(event, '${d}', '${escapeHtml(currentBrandName)}', ${pVal}, ${nVal})"
+                        onmousemove="moveTrendTooltip(event)"
+                        onmouseout="hideTrendTooltip()"></circle>
+                    <circle cx="${x}" cy="${yNeg}" r="4" class="chart-point" fill="#ef4444" data-date="${d}" data-pos="${pVal}" data-neg="${nVal}"
+                        onmouseover="showTrendTooltip(event, '${d}', '${escapeHtml(currentBrandName)}', ${pVal}, ${nVal})"
+                        onmousemove="moveTrendTooltip(event)"
+                        onmouseout="hideTrendTooltip()"></circle>
+                `;
+            }
+        });
+
+        svg.innerHTML = gridHtml + polylinesHtml + dotsHtml;
+    }
+
+    function showTrendTooltip(event, dateStr, brandName, posVal, negVal) {
+        const tip = document.getElementById('trendTooltip');
+        if (!tip) return;
+        tip.innerHTML = `
+            <div style="font-weight:700; color:var(--title-color); margin-bottom:4px;">${dateStr} (${brandName})</div>
+            <div style="color:var(--pos-green); font-weight:600; font-size:0.78rem;">正面聲量: <span style="font-family:monospace; font-weight:700;">${posVal}</span></div>
+            <div style="color:var(--neg-red); font-weight:600; font-size:0.78rem;">負面聲量: <span style="font-family:monospace; font-weight:700;">${negVal}</span></div>
+        `;
+        tip.style.display = 'block';
+        moveTrendTooltip(event);
+    }
+
+    function moveTrendTooltip(event) {
+        const tip = document.getElementById('trendTooltip');
+        const container = document.getElementById('svgContainer');
+        if (!tip || !container) return;
+        const rect = container.getBoundingClientRect();
+        let left = event.clientX - rect.left + 14;
+        let top = event.clientY - rect.top - 15;
+        if (left + 180 > rect.width) left = event.clientX - rect.left - 190;
+        if (top + 80 > rect.height) top = rect.height - 85;
+        tip.style.left = `${Math.max(10, left)}px`;
+        tip.style.top = `${Math.max(10, top)}px`;
+    }
+
+    function hideTrendTooltip() {
+        const tip = document.getElementById('trendTooltip');
+        if (tip) tip.style.display = 'none';
+    }
+
+    // Top10Module: 直接讀取 currentCalcState.top10Agg，禁止重算與排序
+    function renderTop10Tables(top10Agg) {
+        const posTbody = document.getElementById('posTbody');
+        const negTbody = document.getElementById('negTbody');
+        if(!posTbody || !negTbody) return;
+        posTbody.innerHTML = ''; negTbody.innerHTML = '';
+
+        const tAgg = top10Agg || (window.currentCalcState && window.currentCalcState.top10Agg) || { posList: [], negList: [] };
+        const posList = tAgg.posList || [];
+        const negList = tAgg.negList || [];
+
+        const buildRows = (list, targetTbody, isPos) => {
+            if (!list.length) {
+                targetTbody.innerHTML = '<tr><td colspan="5" class="empty-state" style="text-align:center;">無符合條件之資料</td></tr>';
+                return;
+            }
+            list.forEach(r => {
+                const tr = document.createElement('tr');
+                const volColor = isPos ? 'var(--pos-green)' : 'var(--neg-red)';
+                const volNum = isPos ? r.posVol : r.negVol;
+                const safeUrl = (r.url && r.url.startsWith('http')) ? r.url : '#';
+                tr.innerHTML = `
+                    <td style="color:var(--text-dim);font-family:monospace;">${r.date.slice(5)}</td>
+                    <td><span style="display:inline-block;background:var(--badge-bg);padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid var(--border-subtle);">${escapeHtml(r.brand)}</span></td>
+                    <td><span style="color:var(--text-muted);font-size:0.75rem;">${escapeHtml(r.issue)}</span></td>
+                    <td><div class="summary-text" title="${escapeHtml(r.summary)}">${escapeHtml(r.summary)}</div></td>
+                    <td style="text-align:right;">
+                        <span style="font-weight:700;font-family:monospace;color:${volColor}">${volNum}</span>
+                        ${safeUrl !== '#' ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" style="color:#38bdf8;text-decoration:none;margin-left:4px;" title="前往原文">↗</a>` : ''}
+                    </td>
+                `;
+                targetTbody.appendChild(tr);
+            });
+        };
+
+        buildRows(posList, posTbody, true);
+        buildRows(negList, negTbody, false);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
+    // ChannelModule: 直接讀取 currentCalcState.channelAgg，禁止重新聚合
+    function renderChannelDistribution(channelAggParam) {
+        const sec = document.getElementById('channelSection');
+        const bar = document.getElementById('channelBarContainer');
+        const leg = document.getElementById('channelLegend');
+        if(!sec || !bar || !leg) return;
+
+        const cAgg = channelAggParam || (window.currentCalcState && window.currentCalcState.channelAgg);
+        const brandChannel = cAgg && (cAgg[selectedBrandKey] || cAgg.selected);
+
+        if (!brandChannel || brandChannel.totalVol === 0) {
+            sec.style.display = 'none';
+            return;
+        }
+        sec.style.display = 'flex';
+
+        let barHtml = '';
+        let legHtml = '';
+        brandChannel.items.forEach(item => {
+            const pct = item.pct.toFixed(1);
+            const col = item.color;
+            barHtml += `<div style="width: ${pct}%; background-color: ${col}; height: 100%; transition: 0.3s;" title="${item.name}: ${item.vol} (${pct}%)"></div>`;
+            legHtml += `<div style="display:flex; justify-content:space-between;"><span><span style="color:${col};">●</span> ${item.name}</span> <span style="color:var(--text-main); font-family:monospace;">${item.vol} (${pct}%)</span></div>`;
+        });
+
+        bar.innerHTML = barHtml;
+        leg.innerHTML = legHtml;
+    }
+
+    // ExecutiveSummary: 直接讀取 currentCalcState.brandAgg 與 top10Agg
+    function copyExecutiveSummary() {
+        const state = window.currentCalcState;
+        if (!state || !state.metadata || !state.brandAgg || Object.keys(state.brandAgg).length === 0) {
+            alert('尚無資料可供匯出，請先套用篩選。');
+            return;
+        }
+
+        const md = state.metadata;
+        const btn = document.getElementById('btnCopyReport');
+        const originalText = btn.innerText;
+
+        let text = `【輿情戰情摘要】
+`;
+        text += `分析期間：${md.currRange.start || '全期'} ~ ${md.currRange.end || '全期'}
+`;
+        if (md.hasPrevData && md.prevRange) {
+            text += `前期比較：${md.prevRange.start} ~ ${md.prevRange.end}
+`;
+        } else {
+            text += `前期比較：資料不足
+`;
+        }
+        const tabName = document.querySelector('.tab-btn.active').innerText;
+        text += `觀察業務：${tabName}
+`;
+        if (md.keyword) text += `過濾條件：關鍵字包含 "${md.keyword}"
+`;
+        text += `
+📊 品牌對抗現況：
+`;
+
+        const defs = md.defs || COMP_DEFINITIONS[md.segment];
+        defs.forEach(d => {
+            const bStat = state.brandAgg[d.key];
+            if (!bStat) return;
+            const c = bStat.curr;
+            const p = bStat.prev;
+            const pn = c.neg > 0 ? (c.pos / c.neg).toFixed(2) : (c.pos > 0 ? '無負評' : (c.neu > 0 ? '僅中立' : '無聲量'));
+            let diffTxt = '無前期可比較';
+            if (md.hasPrevData) {
+                if(p.total === 0 && c.total > 0) diffTxt = `新增 ${c.total}`;
+                else if(p.total === 0 && c.total === 0) diffTxt = `無變動`;
+                else {
+                    const diff = c.total - p.total;
+                    const pct = (diff / p.total * 100).toFixed(1);
+                    diffTxt = `${diff > 0 ? '+' : ''}${diff} (${diff > 0 ? '+' : ''}${pct}%)`;
+                }
+            }
+            text += `- ${d.name}: 期間聲量 ${c.total} (較前期 ${diffTxt}) | PN比: ${pn}
+`;
+        });
+
+        const selDef = defs.find(d => d.key === selectedBrandKey);
+        text += `
+🚨 首要負向討論 (${selDef ? selDef.name : selectedBrandKey})：
+`;
+        const negTop3 = (state.top10Agg && state.top10Agg.negList) ? state.top10Agg.negList.slice(0, 3) : [];
+
+        if(negTop3.length === 0) {
+            text += `本期無負向討論。
+`;
+        } else {
+            negTop3.forEach((r, i) => {
+                text += `${i+1}. [${r.issue}] ${r.summary} (期間聲量: ${r.negVol})
+`;
+                if(r.url) text += `   🔗 ${r.url}
+`;
+            });
+        }
+        
+        text += `\n(本摘要由系統依目前條件生成，請由業務單位判定後續策略)`;
+
+        navigator.clipboard.writeText(text).then(() => {
+            btn.innerText = '✅ 已複製';
+            setTimeout(() => { btn.innerText = originalText; }, 2000);
+        }).catch(err => {
+            alert("剪貼簿存取失敗，請手動複製以下內容：\n" + text);
+        });
+    }
+
+    // RadarModule: 直接讀取 currentCalcState.issueAgg，禁止重新掃描 details 聚合
+    function updateRadar() {
+        const state = window.currentCalcState;
+        const container = document.getElementById('radarTbody');
+        const emptyMsg = document.getElementById('radarEmptyMsg');
+        const tableWrap = document.getElementById('radarTableWrap');
+
+        if (!state || !state.metadata || !state.issueAgg || state.issueAgg.size === 0) {
+            tableWrap.style.display = 'none';
+            emptyMsg.style.display = 'block';
+            emptyMsg.textContent = '請先載入並套用篩選。';
+            return;
+        }
+
+        if (!state.metadata.prevRange) {
+            tableWrap.style.display = 'none';
+            emptyMsg.style.display = 'block';
+            emptyMsg.textContent = '前期資料不足，無法進行增量比較。';
+            return;
+        }
+
+        const scope = document.getElementById('radarScope').value;
+        const minCurr = parseInt(document.getElementById('radarMinCurr').value) || 3;
+        const minInc = parseInt(document.getElementById('radarMinInc').value) || 2;
+
+        let results = [];
+        state.issueAgg.forEach(group => {
+            if (scope === 'selected' && group.compGroup !== selectedBrandKey) return;
+            if (group.currNeg >= minCurr && group.increase >= minInc) {
+                results.push(group);
+            }
+        });
+
+        window.latestRadarResults = results;
+        results.sort((a, b) => {
+            if (b.increase !== a.increase) return b.increase - a.increase;
+            return b.currNeg - a.currNeg;
+        });
+
+        if (results.length === 0) {
+            tableWrap.style.display = 'none';
+            emptyMsg.style.display = 'block';
+            emptyMsg.textContent = `目前條件下，無項目達標 (需本期負面量 ≥ ${minCurr} 且 增加量 ≥ ${minInc})。`;
+            return;
+        }
+
+        tableWrap.style.display = 'block';
+        emptyMsg.style.display = 'none';
+        container.innerHTML = '';
+
+        results.forEach(r => {
+            const tr = document.createElement('tr');
+            const compName = r.compName || r.compGroup;
+            
+            let incHtml = `<span style="color:var(--neg-red); font-weight:bold;">+${r.increase}</span>`;
+            if (r.prevNeg === 0) {
+                incHtml += ` <span style="font-size:0.75rem; color:var(--text-muted);">(本期新增)</span>`;
+            } else {
+                const pct = ((r.increase / r.prevNeg) * 100).toFixed(0);
+                incHtml += ` <span style="font-size:0.75rem; color:var(--neg-red);">(+${pct}%)</span>`;
+            }
+
+            let dateTxt = '-';
+            let topThreadHtml = '-';
+            if (r.topThread) {
+                dateTxt = r.topThread.firstDate ? r.topThread.firstDate.slice(5) : '-';
+                const safeUrl = (r.topThread.url && r.topThread.url.startsWith('http')) ? r.topThread.url : '#';
+                const safeSum = escapeHtml(r.topThread.summary);
+                const linkIcon = safeUrl !== '#' ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" style="color:#38bdf8;text-decoration:none;margin-left:4px;" title="前往原文">↗</a>` : '';
+                topThreadHtml = `
+                    <div class="summary-text" title="${safeSum}" style="-webkit-line-clamp: 1;">${safeSum}</div>
+                    <div style="font-size:0.75rem; color:var(--text-dim); margin-top:2px;">
+                        代表日期: <span style="color:#38bdf8; font-family:monospace;">${dateTxt}</span> | 單篇貢獻負評: <span style="color:var(--neg-red); font-family:monospace; font-weight:bold;">${r.topThread.currVol.n}</span> ${linkIcon}
+                    </div>
+                `;
+            }
+
+            const auditBtn = `<button class="btn-secondary" style="padding:2px 6px; font-size:0.7rem; border-color:var(--primary-light); color:var(--primary-light);" onclick="AuditDetailModal.open({
+                sourceModule: '品牌負評增加雷達',
+                targetBrand: '${escapeHtml(compName)}',
+                targetIssue: '${escapeHtml(r.issue).replace(/'/g, "\\'")}',
+                compGroupKey: '${r.compGroup}',
+                expectedStats: { neg: ${r.currNeg}, inc: ${r.increase} },
+                formulaType: 'negIncrease',
+                filterFn: x => x.compGroup === '${r.compGroup}' && x.issue === '${escapeHtml(r.issue).replace(/'/g, "\\'")}' && x.currVol.n > 0
+            })">🔍 增量依據</button>`;
+            
+            tr.innerHTML = `
+                <td style="color:var(--text-dim);font-family:monospace;">${dateTxt}</td>
+                <td><span style="display:inline-block;background:var(--badge-bg);padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid var(--border-subtle);">${escapeHtml(compName)}</span></td>
+                <td><span style="color:var(--text-muted); font-weight:600;">${escapeHtml(r.issue)}</span></td>
+                <td style="text-align:right; font-family:monospace; color:var(--neg-red); font-weight:bold; font-size:1.1rem;">${r.currNeg}</td>
+                <td style="text-align:right; font-family:monospace; color:var(--text-dim);">${r.prevNeg}</td>
+                <td style="text-align:right; vertical-align:middle;">
+                    <div style="margin-bottom:6px;">${incHtml}</div>
+                    ${auditBtn}
+                </td>
+                <td>${topThreadHtml}</td>
+            `;
+            container.appendChild(tr);
+        });
+    }
+
+    // =========================================================================
+    // 模組化封裝：MatrixModule (議題聲量與正向佔比 2x2 探索入口)
+    // 直接讀取 currentCalcState.issueAgg，禁止重新掃描 details 聚合或修改 State
+    // =========================================================================
+    
+    // =========================================================================
+    // 模組化封裝：解約／申訴候選 (ChurnCandidateModule - Sprint B-1)
+    // =========================================================================
+    const ChurnRiskModule = {
+        RULES: {
+            negationPrefix: /(不|別|沒|免|無|未|不必|不用|不想|不會)/,
+            negativePhrases: ["不考慮解約", "不會解約", "不會攜碼", "不打算解約", "不打算攜碼", "不申訴", "暫時不考慮", "暫時不會", "已續約", "決定續約", "決定不申訴", "不向ncc申訴", "不向 NCC 申訴", "不向ncc申訴", "不打算申訴", "不考慮申訴", "不會申訴", "暫不申訴"],
+            churnTerms: /(解約|退租|攜碼|跳槽|\bNP\b|換別家|約滿|違約金|解約金|退訂|退機上盒)/gi,
+            complaintTerms: /(NCC|消保官|投訴|告發|申訴|消基會|調解|報警|提告|起訴|違法)/gi
+        },
+
+        isMatch(text, termRegex) {
+            if (!text) return [];
+            
+            // 1. 第二層：長句否定詞過濾 (若包含則整篇拒絕比對，支援大小寫不拘)
+            const lowerText = text.toLowerCase();
+            for (const phrase of this.RULES.negativePhrases) {
+                if (lowerText.includes(phrase.toLowerCase())) return [];
+            }
+            
+            // 2. 第一層：前綴否定詞過濾
+            const hits = new Set();
+            const matches = text.matchAll(termRegex);
+            for (const m of matches) {
+                const matchIndex = m.index;
+                const lookback = text.substring(Math.max(0, matchIndex - 3), matchIndex);
+                if (!this.RULES.negationPrefix.test(lookback)) {
+                    hits.add(m[0].toLowerCase());
+                }
+            }
+            return Array.from(hits);
+        },
+
+        clear() {
+            const el1 = document.getElementById('churnTbody'); if (el1) el1.innerHTML = '';
+            const el2 = document.getElementById('complaintTbody'); if (el2) el2.innerHTML = '';
+            const s1 = document.getElementById('churnSummary'); if (s1) s1.innerHTML = '';
+            const s2 = document.getElementById('complaintSummary'); if (s2) s2.innerHTML = '';
+        },
+
+        render() {
+            const state = window.currentCalcState;
+            const scope = document.getElementById('churnScope') ? document.getElementById('churnScope').value : 'selected';
+            
+            if (!state || !state.details || state.details.length === 0) {
+                this.clear();
+                return;
+            }
+
+            let churnList = [];
+            let complaintList = [];
+            
+            // 唯讀 details 進行篩選
+            state.details.forEach(s => {
+                if (scope === 'selected' && s.compGroup !== selectedBrandKey) return;
+                if (s.currVol.n === 0) return; // 負評需 > 0，嚴格過濾純好評
+
+                const fullText = (s.issue + " " + s.summary);
+                
+                const churnHits = this.isMatch(fullText, this.RULES.churnTerms);
+                if (churnHits.length > 0) {
+                    churnList.push({ ...s, hits: churnHits });
+                    const iKey = `${s.compGroup}||${s.issue}`;
+                    if (state.issueAgg && state.issueAgg.has(iKey)) {
+                        state.issueAgg.get(iKey).isChurnCandidate = true;
+                    }
+                }
+                
+                const complaintHits = this.isMatch(fullText, this.RULES.complaintTerms);
+                if (complaintHits.length > 0) {
+                    complaintList.push({ ...s, hits: complaintHits });
+                }
+            });
+
+            // 排序：負評大到小 -> 日期新到舊
+            const sortFn = (a, b) => {
+                if (b.currVol.n !== a.currVol.n) return b.currVol.n - a.currVol.n;
+                if (a.firstDate === '-' || b.firstDate === '-') return 0;
+                return b.firstDate.localeCompare(a.firstDate);
+            };
+            churnList.sort(sortFn);
+            complaintList.sort(sortFn);
+            ChurnRiskModule.latestChurn = churnList;
+            ChurnRiskModule.latestComplaint = complaintList;
+            
+            const defs = state.metadata.defs || [];
+
+            this._drawTable('churnTbody', 'churnSummary', churnList, '⚠', defs);
+            this._drawTable('complaintTbody', 'complaintSummary', complaintList, '🚨', defs);
+        },
+        
+        focusAndScroll(compGroup, issue) {
+            // 1. 若目前處於隱藏「議題分析」之模式，先確認是否切換
+            const catAnalysis = document.getElementById('catAnalysis');
+            const isAnalysisVisible = catAnalysis && catAnalysis.style.display !== 'none';
+
+            if (!isAnalysisVisible) {
+                if (confirm("目前戰情模式未顯示「議題分析」區塊。是否切換至「議題深度探索」模式以檢視矩陣與趨勢？")) {
+                    if (typeof DashboardModeManager !== 'undefined') {
+                        DashboardModeManager.setMode('exploration');
+                    }
+                } else {
+                    // 若使用者選擇不切換模式，僅在背後套用聚焦篩選
+                    toggleIssueFocus(compGroup, issue);
+                    return;
+                }
+            }
+
+            // 2. 執行聚焦
+            toggleIssueFocus(compGroup, issue);
+
+            // 3. 平滑捲動至「肆、議題分析 / 矩陣探索入口」
+            setTimeout(() => {
+                const target = document.getElementById('catAnalysis') || document.getElementById('matrixSection');
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        },
+        
+        _drawTable(tbodyId, summaryId, list, icon, defs) {
+            const tbody = document.getElementById(tbodyId);
+            const summary = document.getElementById(summaryId);
+            if (!tbody || !summary) return;
+            
+            tbody.innerHTML = '';
+            
+            let totalNeg = 0;
+            let uniqueIssues = new Set();
+            list.forEach(r => {
+                totalNeg += r.currVol.n;
+                uniqueIssues.add(`${r.compGroup}||${r.issue}`);
+            });
+            
+            summary.innerHTML = `命中 <strong>${list.length}</strong> 串 ｜ 關聯負評 <strong>${totalNeg}</strong> 則 ｜ 涉及議題 <strong>${uniqueIssues.size}</strong> 類`;
+            
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="empty-state" style="padding:24px; text-align:center; color:var(--text-dim);">目前條件下，無符合此類別之候選討論串。</td></tr>`;
+                return;
+            }
+            
+            list.forEach(r => {
+                const tr = document.createElement('tr');
+                const compDef = defs.find(d => d.key === r.compGroup);
+                const compName = compDef ? compDef.name : r.compGroup;
+                const safeUrl = (r.url && r.url.startsWith('http')) ? r.url : '#';
+                
+                const hitsHtml = r.hits.map(h => `<span style="display:inline-block; background:var(--bg-base); border:1px solid var(--border-subtle); padding:1px 4px; border-radius:4px; font-size:0.7rem; color:var(--text-main); margin:1px;">${icon} ${escapeHtml(h)}</span>`).join('');
+                const linkHtml = safeUrl !== '#' ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--info-color);text-decoration:none;margin-left:4px;" title="前往原文">↗</a>` : '';
+
+                // 目前為單篇明細層級，無須額外鑽取依據。
+                // 若未來改為「多篇聚合」，可在此重新啟用 AuditDetailModal。
+                const auditBtn = '';
+                
+                tr.innerHTML = `
+                    <td style="color:var(--text-dim);font-family:monospace;">${r.firstDate !== '-' ? r.firstDate.slice(5) : '-'}</td>
+                    <td><span style="display:inline-block;background:var(--badge-bg);padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid var(--border-subtle);">${escapeHtml(compName)}</span></td>
+                    <td>${hitsHtml}</td>
+                    <td><span style="color:var(--text-muted);font-size:0.75rem;">${escapeHtml(r.issue)}</span></td>
+                    <td><div class="summary-text" style="-webkit-line-clamp:2;" title="${escapeHtml(r.summary)}">${escapeHtml(r.summary)}</div>${linkHtml}</td>
+                    <td style="text-align:right;"><span style="font-weight:700;font-family:monospace;color:var(--neg-red);">${r.currVol.n}</span></td>
+                    <td style="text-align:center; display:flex; flex-direction:column; gap:4px; align-items:center; border-bottom:none;">
+                        <button class="btn-secondary" style="padding:2px 6px; font-size:0.7rem;" onclick="ChurnRiskModule.focusAndScroll('${r.compGroup}', '${escapeHtml(r.issue).replace(/'/g, "\\'")}')">🎯 聚焦</button>
+                        ${auditBtn}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    };
+
+        const LongTailModule = {
+        clear() {
+            const tbody = document.getElementById('longTailTbody'); if (tbody) tbody.innerHTML = '';
+            ['longTailCount', 'longTailCumNeg', 'longTailMaxMth', 'longTailHighCount', 'longTailMedCount', 'longTailLowCount'].forEach(id => {
+                const el = document.getElementById(id); if (el) el.textContent = '0';
+            });
+            const wrap = document.getElementById('longTailTableWrap'); if (wrap) wrap.style.display = 'none';
+            const empty = document.getElementById('longTailEmptyMsg'); if (empty) empty.style.display = 'flex';
+        },
+        
+        render() {
+            const state = window.currentCalcState;
+            const scopeEl = document.getElementById('longTailScope');
+            const scope = scopeEl ? scopeEl.value : 'selected';
+            const wrap = document.getElementById('longTailTableWrap');
+            const empty = document.getElementById('longTailEmptyMsg');
+            const tbody = document.getElementById('longTailTbody');
+            
+            if (!state || !state.issueAgg || state.issueAgg.size === 0) {
+                this.clear();
+                if (empty) empty.textContent = '請套用篩選以計算長尾風險。';
+                return;
+            }
+
+            const radarMinCurr = parseInt(document.getElementById('radarMinCurr').value) || 3;
+            const radarMinInc = parseInt(document.getElementById('radarMinInc').value) || 2;
+            const radarIssues = new Set();
+            state.issueAgg.forEach(g => {
+                if (g.currNeg >= radarMinCurr && g.increase >= radarMinInc) {
+                    radarIssues.add(g.key);
+                }
+            });
+
+            let candidates = [];
+            state.issueAgg.forEach(g => {
+                if (scope === 'selected' && g.compGroup !== selectedBrandKey) return;
+                
+                // LT-01 & LT-03: 跨期持續負評 (prev > 0 && curr > 0)
+                if (g.currNeg > 0 && g.prevNeg > 0) {
+                    // LT-02: 排除已進雷達者 (不可互斥的地方是 ChurnCandidate，雷達依然互斥)
+                    if (!radarIssues.has(g.key)) {
+                        candidates.push({ ...g }); // ⭐ [關鍵修復] 淺拷貝解除 Object.freeze() 凍結
+                    }
+                }
+            });
+
+            let cHigh = 0, cMed = 0, cLow = 0;
+            let totalCumNeg = 0;
+            let maxPersistentMth = 0;
+            
+            candidates.forEach(c => {
+                c.persistentMonths = calculateDurationMonths(c.firstMonth, c.lastMonth, c.sources);
+                
+                if (c.persistentMonths > maxPersistentMth) maxPersistentMth = c.persistentMonths;
+                totalCumNeg += c.cumulativeNeg || (c.currNeg + c.prevNeg);
+                
+                if (c.persistentMonths >= 4 && c.cumulativeNeg >= 20) { c.riskLevel = '高'; c.riskIcon = '🔴'; cHigh++; }
+                else if (c.persistentMonths >= 3 || (c.persistentMonths >= 2 && c.cumulativeNeg >= 10)) { c.riskLevel = '中'; c.riskIcon = '🟠'; cMed++; }
+                else { c.riskLevel = '低'; c.riskIcon = '⚪'; cLow++; }
+            });
+
+            // 排序: 高->中->低, 接著持續月份降冪, 然後累積負評降冪
+            LongTailModule.latestCandidates = candidates;
+            const riskOrder = {'高': 3, '中': 2, '低': 1};
+            candidates.sort((a, b) => {
+                if (riskOrder[b.riskLevel] !== riskOrder[a.riskLevel]) return riskOrder[b.riskLevel] - riskOrder[a.riskLevel];
+                if (b.persistentMonths !== a.persistentMonths) return b.persistentMonths - a.persistentMonths;
+                return b.cumulativeNeg - a.cumulativeNeg;
+            });
+
+            document.getElementById('longTailCount').textContent = candidates.length;
+            document.getElementById('longTailCumNeg').textContent = totalCumNeg;
+            document.getElementById('longTailMaxMth').textContent = maxPersistentMth;
+            document.getElementById('longTailHighCount').textContent = cHigh;
+            document.getElementById('longTailMedCount').textContent = cMed;
+            document.getElementById('longTailLowCount').textContent = cLow;
+
+            if (candidates.length === 0) {
+                if (wrap) wrap.style.display = 'none';
+                if (empty) {
+                    empty.textContent = '目前條件下，無符合長尾風險特徵之議題。';
+                    empty.style.display = 'flex';
+                }
+                return;
+            }
+
+            if (wrap) wrap.style.display = 'block';
+            if (empty) empty.style.display = 'none';
+            if (tbody) tbody.innerHTML = '';
+
+            candidates.forEach(r => {
+                const tr = document.createElement('tr');
+                const compName = r.compName || r.compGroup;
+                
+                let issueHtml = escapeHtml(r.issue);
+                // 與 Churn Candidate 並存標記
+                if (r.isChurnCandidate) {
+                    issueHtml += `<br><span style="display:inline-block; margin-top:4px; padding:2px 6px; border-radius:4px; font-size:0.65rem; background:rgba(245, 158, 11, 0.15); color:#f59e0b; border:1px solid #f59e0b; font-weight:600;">⚠ 已列入解約候選</span>`;
+                }
+                
+                tr.innerHTML = `
+                    <td style="text-align:center;"><span style="display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:700; background:var(--bg-base); border:1px solid var(--border-subtle);">${r.riskIcon} ${r.riskLevel}</span></td>
+                    <td><span style="display:inline-block;background:var(--badge-bg);padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid var(--border-subtle);">${escapeHtml(compName)}</span></td>
+                    <td>
+                        <span style="color:var(--text-muted); font-weight:600;">${issueHtml}</span>
+                    </td>
+                    <td style="text-align:right; font-family:monospace; color:var(--text-dim);">${r.prevNeg}</td>
+                    <td style="text-align:right; font-family:monospace; color:var(--text-dim); font-weight:bold;">${r.currNeg}</td>
+                    <td style="text-align:center; font-size:0.75rem; color:var(--text-dim);">
+                        <div style="margin-bottom:2px;">首次: <span style="font-family:monospace; color:var(--text-main);">${r.firstMonth || '-'}</span></div>
+                        <div>最近: <span style="font-family:monospace; color:var(--text-main);">${r.lastMonth || '-'}</span></div>
+                    </td>
+                    <td style="text-align:center; font-family:monospace; color:var(--primary-light); font-weight:bold;">${r.persistentMonths} 個月</td>
+                    <td style="text-align:right; font-family:monospace; color:var(--neg-red); font-weight:bold; font-size:1.1rem;">${r.cumulativeNeg || (r.currNeg + r.prevNeg)}</td>
+                    <td style="text-align:center;">
+                        <button class="btn-secondary" style="padding:2px 10px; font-size:0.7rem; margin-bottom:4px;" onclick="ChurnRiskModule.focusAndScroll('${r.compGroup}', '${escapeHtml(r.issue).replace(/'/g, "\\'")}')">🎯 聚焦</button><br>
+                        <button class="btn-secondary" style="padding:2px 10px; font-size:0.7rem; border-color:var(--info-color); color:var(--info-color);" onclick="LongTailHistoryModal.open('${r.key}')">📜 歷史</button>
+                    </td>
+                `;
+                if(tbody) tbody.appendChild(tr);
+            });
+        }
+    };
+const MatrixModule = {
+        _cache: [],
+        _clusters: [],
+
+        init() {
+            this.loadSettings();
+        },
+
+        saveSettings() {
+            try {
+                const getVal = id => {
+                    const el = document.getElementById(id);
+                    return el ? el.value : null;
+                };
+                if (!document.getElementById('matrixScope')) return;
+                const panel = document.getElementById('matrixAdvPanel');
+                const settings = {
+                    scope: getVal('matrixScope'),
+                    minVol: getVal('matrixMinVol'),
+                    xFormula: getVal('matrixXFormula'),
+                    xMode: getVal('matrixXBaselineMode'),
+                    xScale: getVal('matrixXAxisScale'),
+                    yScale: getVal('matrixYScaleMode'),
+                    yBaseScope: getVal('matrixYBaseScope'),
+                    advOpen: (panel && panel.style.display === 'flex') ? '1' : '0'
+                };
+                localStorage.setItem('dashboard_matrix_settings', JSON.stringify(settings));
+            } catch (e) {
+                console.warn('localStorage save failed:', e);
+            }
+        },
+
+        loadSettings() {
+            try {
+                const savedStr = localStorage.getItem('dashboard_matrix_settings');
+                if (!savedStr) return;
+                const s = JSON.parse(savedStr);
+                const setVal = (id, val) => {
+                    if (val !== null && val !== undefined) {
+                        const el = document.getElementById(id);
+                        if (el) el.value = val;
+                    }
+                };
+                setVal('matrixScope', s.scope);
+                setVal('matrixMinVol', s.minVol);
+                setVal('matrixXFormula', s.xFormula);
+                setVal('matrixXBaselineMode', s.xMode);
+                setVal('matrixXAxisScale', s.xScale);
+                setVal('matrixYScaleMode', s.yScale);
+                setVal('matrixYBaseScope', s.yBaseScope);
+
+                if (s.advOpen === '1') {
+                    const panel = document.getElementById('matrixAdvPanel');
+                    const btn = document.getElementById('btnMatrixAdv');
+                    if (panel) panel.style.display = 'flex';
+                    if (btn) btn.textContent = '⚙️ 收合進階設定 ▴';
+                }
+            } catch (e) {
+                console.warn('localStorage load failed:', e);
+            }
+        },
+
+        toggleAdvanced() {
+            const panel = document.getElementById('matrixAdvPanel');
+            const btn = document.getElementById('btnMatrixAdv');
+            if (!panel) return;
+            const isHidden = panel.style.display === 'none' || panel.style.display === '';
+            panel.style.display = isHidden ? 'flex' : 'none';
+            if (btn) btn.textContent = isHidden ? '⚙️ 收合進階設定 ▴' : '⚙️ 進階座標與基準設定 ▾';
+            this.saveSettings();
+        },
+
+        toggleGuide() {
+            const detail = document.getElementById('matrixGuideDetails');
+            const btn = document.getElementById('btnMatrixGuide');
+            if (!detail) return;
+            const isHidden = detail.style.display === 'none' || detail.style.display === '';
+            detail.style.display = isHidden ? 'block' : 'none';
+            if (btn) btn.textContent = isHidden ? '📖 收合判讀說明 ▴' : '📖 如何判讀與公式說明 ▾';
+        },
+
+        scrollToDrilldown() {
+            const el = document.getElementById('drilldownSection');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        },
+
+        clear() {
+            this._cache = [];
+            this._clusters = [];
+            const emptyMsg = document.getElementById('matrixEmptyMsg');
+            if (emptyMsg) { emptyMsg.style.display = 'block'; emptyMsg.textContent = '請套用篩選以顯示議題分佈。'; }
+            const mainContainer = document.getElementById('matrixMainContainer');
+            if (mainContainer) mainContainer.style.display = 'none';
+            const scopeText = document.getElementById('matrixScopeText');
+            if (scopeText) scopeText.textContent = '矩陣總覽範圍：請套用篩選';
+            const scaleNotice = document.getElementById('matrixScaleNotice');
+            if (scaleNotice) scaleNotice.textContent = '';
+            
+        },
+
+        render() {
+            const state = window.currentCalcState;
+            const emptyMsg = document.getElementById('matrixEmptyMsg');
+            const mainContainer = document.getElementById('matrixMainContainer');
+            const scopeText = document.getElementById('matrixScopeText');
+            const scaleNotice = document.getElementById('matrixScaleNotice');
+            
+            
+            const svg = document.getElementById('matrixSvg');
+            const tbody = document.getElementById('matrixTbody');
+            const countText = document.getElementById('matrixListCountText');
+            const thPosRate = document.getElementById('thMatrixPosRate');
+
+            if (!state || !state.metadata || !state.issueAgg || state.issueAgg.size === 0) {
+                this.clear();
+                return;
+            }
+
+            this.saveSettings();
+
+            const metadata = state.metadata;
+            const scope = document.getElementById('matrixScope').value;
+            const minVol = Math.max(1, parseInt(document.getElementById('matrixMinVol').value) || 3);
+            const xFormula = document.getElementById('matrixXFormula') ? document.getElementById('matrixXFormula').value : 'total';
+            const xMode = document.getElementById('matrixXBaselineMode').value;
+            const xScaleMode = document.getElementById('matrixXAxisScale').value;
+            const yScaleMode = document.getElementById('matrixYScaleMode') ? document.getElementById('matrixYScaleMode').value : 'log';
+            const yBaseScope = document.getElementById('matrixYBaseScope') ? document.getElementById('matrixYBaseScope').value : 'displayed';
+
+            if (thPosRate) {
+                thPosRate.textContent = xFormula === 'polarized' ? '正向比(除正負)' : '正向佔比(含中)';
+            }
+
+            // 直接從統一聚合層 currentCalcState.issueAgg 取值並建立純視圖投影，絕不回寫污染
+            let allActiveIssues = [];
+            state.issueAgg.forEach(src => {
+                if (scope === 'selected' && src.compGroup !== selectedBrandKey) return;
+                if (src.tot === 0) return;
+
+                allActiveIssues.push({
+                    key: src.key,
+                    compGroup: src.compGroup,
+                    compName: src.compName,
+                    issue: src.issue,
+                    pos: src.pos,
+                    neu: src.neu,
+                    neg: src.neg,
+                    tot: src.tot,
+                    posRate: xFormula === 'polarized' ? src.posRatePolarized : src.posRateTotal,
+                    negRate: xFormula === 'polarized' ? src.negRatePolarized : src.negRateTotal,
+                    isPureNeutral: xFormula === 'polarized' ? src.isPureNeutral : false,
+                    pn: src.pn
+                });
+            });
+
+            let displayList = allActiveIssues.filter(it => it.tot >= minVol);
+
+            const basePool = (yBaseScope === 'displayed' && displayList.length > 0) ? displayList : allActiveIssues;
+            let xBase = 50.0;
+            let yBase = 0.0;
+
+            if (basePool.length > 0) {
+                if (xMode === 'weighted') {
+                    let sumP = 0, sumDenom = 0;
+                    basePool.forEach(it => {
+                        sumP += it.pos;
+                        sumDenom += (xFormula === 'polarized') ? (it.pos + it.neg) : it.tot;
+                    });
+                    xBase = sumDenom > 0 ? (sumP / sumDenom) * 100 : 0.0;
+                } else {
+                    xBase = 50.0;
+                }
+
+                let vols = basePool.map(it => it.tot).sort((a, b) => a - b);
+                let mid = Math.floor(vols.length / 2);
+                yBase = (vols.length % 2 === 1) ? vols[mid] : (vols[mid - 1] + vols[mid]) / 2;
+            }
+
+            displayList.sort((a, b) => {
+                if (b.tot !== a.tot) return b.tot - a.tot;
+                return b.posRate - a.posRate;
+            });
+
+            const highXText = xMode === 'fixed50' ? '正面過半' : '正向佔比高於整體';
+            const lowXText  = xMode === 'fixed50' ? '正面未過半' : '正向佔比低於整體';
+
+            displayList.forEach((item, idx) => {
+                item.shortId = String(idx + 1).padStart(2, '0');
+                const isHighVol = item.tot >= yBase;
+                const isHighPos = item.posRate >= xBase;
+                if (isHighVol && isHighPos) {
+                    item.quadrant = `高聲量／${highXText}`;
+                    item.quadColor = '#22c55e';
+                } else if (isHighVol && !isHighPos) {
+                    item.quadrant = `高聲量／${lowXText}`;
+                    item.quadColor = '#ef4444';
+                } else if (!isHighVol && !isHighPos) {
+                    item.quadrant = `低聲量／${lowXText}`;
+                    item.quadColor = '#94a3b8';
+                } else {
+                    item.quadrant = `低聲量／${highXText}`;
+                    item.quadColor = '#38bdf8';
+                }
+            });
+
+            this._cache = displayList;
+
+            const defs = metadata.defs || COMP_DEFINITIONS[metadata.segment];
+            const selDef = defs.find(d => d.key === selectedBrandKey);
+            const selName = selDef ? selDef.name : selectedBrandKey;
+            const scopeDesc = scope === 'selected' ? `${selName}` : `本業務全群組`;
+            const baseScopeDesc = yBaseScope === 'displayed' ? '依目前顯示議題計算' : '依全部有聲量議題計算';
+            if (scopeText) {
+                scopeText.innerHTML = `<strong>總覽範圍：</strong>${scopeDesc} (共 ${allActiveIssues.length} 個活躍議題，達門檻顯示 <strong>${displayList.length}</strong> 個 ｜ 分界虛線：${baseScopeDesc})`;
+            }
+
+
+
+            if (displayList.length === 0) {
+                emptyMsg.style.display = 'block';
+                emptyMsg.textContent = allActiveIssues.length === 0
+                    ? '目前條件下無本期有聲量之議題。'
+                    : `目前條件下無達最低顯示聲量 (≥ ${minVol}) 之議題。`;
+                mainContainer.style.display = 'none';
+                if (scaleNotice) scaleNotice.textContent = '';
+                return;
+            }
+
+            emptyMsg.style.display = 'none';
+            mainContainer.style.display = 'flex';
+
+            this._drawSvg(svg, displayList, xBase, yBase, { xFormula, xMode, xScaleMode, yScaleMode, highXText, lowXText, scaleNotice });
+            this._drawTable(tbody, displayList, countText);
+        },
+
+        _drawSvg(svg, items, xBase, yBase, opts) {
+            if (!svg) return;
+            svg.innerHTML = '';
+
+            const wrap = document.getElementById('matrixCanvasWrap');
+            const W = (wrap && wrap.clientWidth > 300) ? wrap.clientWidth : 900;
+            const H = 360;
+            svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+            svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+            const padL = 75, padR = 115, padT = 48, padB = 46;
+            const chartW = Math.max(200, W - padL - padR);
+            const chartH = H - padT - padB;
+
+            let xMax = 100;
+            let xBaseOutRight = false;
+            if (opts.xScaleMode === 'auto') {
+                let maxPos = 5;
+                items.forEach(it => { if (it.posRate > maxPos) maxPos = it.posRate; });
+                const refMax = (opts.xMode === 'weighted') ? Math.max(maxPos, xBase) : maxPos;
+                xMax = Math.min(100, Math.max(10, Math.ceil((refMax * 1.35) / 5) * 5));
+                if (opts.xMode === 'fixed50' && xMax < 50) {
+                    xBaseOutRight = true;
+                }
+            }
+
+            if (opts.scaleNotice) {
+                if (xMax < 100) {
+                    opts.scaleNotice.textContent = `🔍 目前橫軸局部放大為 0%～${xMax}% (不代表右端為 100%)${xBaseOutRight ? '；50% 基準線位於圖外右側' : ''} ｜ 縱軸：${opts.yScaleMode === 'log' ? '對數尺度 (Log)' : '線性尺度'}`;
+                } else {
+                    opts.scaleNotice.textContent = `🌐 目前橫軸為全幅 0%～100% ｜ 縱軸：${opts.yScaleMode === 'log' ? '對數尺度 (Log)' : '線性尺度'}`;
+                }
+            }
+
+            let maxTot = 5;
+            let minTot = items[items.length - 1].tot || 1;
+            items.forEach(it => { if (it.tot > maxTot) maxTot = it.tot; });
+            const yTopVal = Math.ceil(maxTot * 1.2);
+            const yBottomVal = Math.max(1, Math.floor(minTot * 0.8));
+
+            const getX = pRate => padL + (Math.max(0, Math.min(xMax, pRate)) / xMax) * chartW;
+            const getY = vol => {
+                const v = Math.max(1, vol);
+                if (opts.yScaleMode === 'log') {
+                    const logMin = Math.log10(yBottomVal);
+                    const logMax = Math.log10(Math.max(yBottomVal + 1, yTopVal));
+                    const ratio = (Math.log10(v) - logMin) / (logMax - logMin || 1);
+                    return (H - padB) - Math.max(0, Math.min(1, ratio)) * chartH;
+                } else {
+                    return (H - padB) - (v / yTopVal) * chartH;
+                }
+            };
+
+            const xBasePx = xBaseOutRight ? (W - padR) : getX(xBase);
+            const yBasePx = getY(yBase);
+
+            let svgHtml = '';
+
+            if (!xBaseOutRight) {
+                svgHtml += `
+                    <rect x="${padL}" y="${padT}" width="${Math.max(0, xBasePx - padL)}" height="${Math.max(0, yBasePx - padT)}" fill="var(--matrix-rect-red)" />
+                    <rect x="${xBasePx}" y="${padT}" width="${Math.max(0, W - padR - xBasePx)}" height="${Math.max(0, yBasePx - padT)}" fill="var(--matrix-rect-green)" />
+                    <rect x="${padL}" y="${yBasePx}" width="${Math.max(0, xBasePx - padL)}" height="${Math.max(0, H - padB - yBasePx)}" fill="var(--matrix-rect-gray)" />
+                    <rect x="${xBasePx}" y="${yBasePx}" width="${Math.max(0, W - padR - xBasePx)}" height="${Math.max(0, H - padB - yBasePx)}" fill="var(--matrix-rect-blue)" />
+                `;
+            } else {
+                svgHtml += `
+                    <rect x="${padL}" y="${padT}" width="${chartW}" height="${Math.max(0, yBasePx - padT)}" fill="var(--matrix-rect-red)" />
+                    <rect x="${padL}" y="${yBasePx}" width="${chartW}" height="${Math.max(0, H - padB - yBasePx)}" fill="var(--matrix-rect-gray)" />
+                `;
+            }
+
+            svgHtml += `
+                <text x="${padL + 12}" y="${padT + 20}" fill="var(--neg-red)" opacity="0.8" font-size="11" font-weight="700" pointer-events="none">高聲量 ／ ${opts.lowXText}</text>
+                ${!xBaseOutRight ? `<text x="${W - padR - 12}" y="${padT + 20}" text-anchor="end" fill="var(--pos-green)" opacity="0.8" font-size="11" font-weight="700" pointer-events="none">高聲量 ／ ${opts.highXText}</text>` : ''}
+                <text x="${padL + 12}" y="${H - padB - 10}" fill="var(--quad-text-color)" opacity="0.8" font-size="11" font-weight="700" pointer-events="none">低聲量 ／ ${opts.lowXText}</text>
+                ${!xBaseOutRight ? `<text x="${W - padR - 12}" y="${H - padB - 10}" text-anchor="end" fill="var(--primary)" opacity="0.8" font-size="11" font-weight="700" pointer-events="none">低聲量 ／ ${opts.highXText}</text>` : ''}
+            `;
+
+            if (!xBaseOutRight) {
+                let xAnchor = "middle", xLabelOffset = xBasePx;
+                if (xBasePx < padL + 75) { xAnchor = "start"; xLabelOffset = xBasePx + 6; }
+                else if (xBasePx > W - padR - 75) { xAnchor = "end"; xLabelOffset = xBasePx - 6; }
+
+                const xBaseTitle = opts.xMode === 'fixed50' ? `X基準: 50.0%` : `整體正向比: ${xBase.toFixed(1)}%`;
+                svgHtml += `
+                    <line x1="${xBasePx}" y1="${padT}" x2="${xBasePx}" y2="${H - padB}" stroke="#64748b" stroke-width="2" stroke-dasharray="4 4" />
+                    <text x="${xLabelOffset}" y="${padT - 10}" text-anchor="${xAnchor}" fill="var(--primary-light)" font-size="11" font-weight="700" font-family="monospace" style="paint-order: stroke fill; stroke: var(--dot-label-stroke); stroke-width: 3.5px;">${xBaseTitle}</text>
+                `;
+            } else {
+                svgHtml += `
+                    <text x="${W - padR}" y="${padT - 10}" text-anchor="end" fill="var(--alert-color)" font-size="11" font-weight="700" style="paint-order: stroke fill; stroke: var(--dot-label-stroke); stroke-width: 3.5px;">(50% 基準線位於圖外右側 ➔)</text>
+                `;
+            }
+
+            let yLabelY = Math.max(padT + 12, Math.min(H - padB - 8, yBasePx));
+            const medianTextStr = `中位數: ${yBase % 1 === 0 ? yBase : yBase.toFixed(1)}`;
+            svgHtml += `
+                <line x1="${padL}" y1="${yBasePx}" x2="${W - padR}" y2="${yBasePx}" stroke="#64748b" stroke-width="2" stroke-dasharray="4 4" />
+                <g transform="translate(${W - padR + 6}, ${yLabelY - 11})" pointer-events="none">
+                    <rect x="0" y="0" width="102" height="22" rx="4" fill="var(--median-badge-bg)" stroke="var(--median-badge-border)" stroke-width="1.2" />
+                    <text x="51" y="15" text-anchor="middle" fill="var(--median-badge-text)" font-size="11" font-weight="700" font-family="monospace">${medianTextStr}</text>
+                </g>
+            `;
+
+            const xAxisTitle = opts.xFormula === 'polarized'
+                ? '正向佔比 (%) ＝ 正面 ÷ (正面＋負面) [不含中立]'
+                : '正向佔比 (%) ＝ 正面 ÷ 總聲量 (正＋中＋負)';
+            svgHtml += `
+                <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="var(--border-subtle)" stroke-width="1.5" />
+                <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="var(--border-subtle)" stroke-width="1.5" />
+                <text x="14" y="24" fill="var(--svg-text)" font-size="11" font-weight="700">期間總聲量 (則) [${opts.yScaleMode === 'log' ? '對數' : '線性'}]</text>
+                <text x="${padL + chartW / 2}" y="${H - 8}" text-anchor="middle" fill="var(--svg-text)" font-size="11" font-weight="700">${xAxisTitle}</text>
+            `;
+
+            const xStep = xMax <= 20 ? 2 : (xMax <= 50 ? 5 : 20);
+            for (let tick = 0; tick <= xMax; tick += xStep) {
+                const tx = getX(tick);
+                svgHtml += `
+                    <line x1="${tx}" y1="${H - padB}" x2="${tx}" y2="${H - padB + 5}" stroke="var(--border-subtle)" stroke-width="1" />
+                    <text x="${tx}" y="${H - padB + 18}" text-anchor="middle" fill="var(--svg-text-dim)" font-size="10" font-family="monospace">${tick}%</text>
+                `;
+            }
+
+            let yTicks = [];
+            if (opts.yScaleMode === 'log') {
+                const candidates = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000];
+                yTicks = candidates.filter(c => c >= yBottomVal && c <= yTopVal);
+                if (!yTicks.includes(yTopVal)) yTicks.push(yTopVal);
+            } else {
+                yTicks = [0, Math.round(yTopVal * 0.5), yTopVal];
+            }
+            yTicks.forEach(val => {
+                const ty = getY(val);
+                svgHtml += `
+                    <line x1="${padL - 5}" y1="${ty}" x2="${padL}" y2="${ty}" stroke="var(--border-subtle)" stroke-width="1" />
+                    <text x="${padL - 8}" y="${ty + 4}" text-anchor="end" fill="var(--svg-text-dim)" font-size="10" font-family="monospace">${val}</text>
+                `;
+            });
+
+            let clusters = [];
+            items.forEach((it) => {
+                const cx = getX(it.posRate);
+                const cy = getY(it.tot);
+                let found = clusters.find(c => Math.hypot(c.cx - cx, c.cy - cy) < 4);
+                if (found) {
+                    found.items.push(it);
+                } else {
+                    clusters.push({ cx, cy, items: [it] });
+                }
+            });
+            this._clusters = clusters;
+
+            clusters.forEach((cluster, cIdx) => {
+                const primary = cluster.items[0];
+                const isMulti = cluster.items.length > 1;
+                const isFocused = window.focusedIssue && cluster.items.some(it => it.compGroup === window.focusedIssue.compGroup && it.issue === window.focusedIssue.issue);
+                const isTop3 = cluster.items.some(it => parseInt(it.shortId) <= 3);
+
+                const cx = cluster.cx.toFixed(1);
+                const cy = cluster.cy.toFixed(1);
+
+                let groupHtml = `<g class="matrix-point-group" tabindex="0" role="button"
+                    onmouseover="MatrixModule.showTooltip(event, ${cIdx})"
+                    onmouseout="MatrixModule.hideTooltip()"
+                    onclick="MatrixModule.onClusterClick(${cIdx})"
+                    onkeydown="if(event.key==='Enter'||event.key===' '){MatrixModule.onClusterClick(${cIdx});event.preventDefault();}">`;
+
+                if (isFocused) {
+                    groupHtml += `
+                        <circle cx="${cx}" cy="${cy}" r="16" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="3 3">
+                            <animate attributeName="r" values="14;18;14" dur="1.8s" repeatCount="indefinite"/>
+                        </circle>
+                    `;
+                }
+
+                const radius = isMulti ? 11 : 10;
+                const strokeCol = isFocused ? "#ffffff" : "#0b0f19";
+                const strokeW = isFocused ? "2.5" : "1.5";
+
+                groupHtml += `
+                    <circle class="main-dot" cx="${cx}" cy="${cy}" r="${radius}" fill="${primary.quadColor}" stroke="${strokeCol}" stroke-width="${strokeW}"></circle>
+                    <text x="${cx}" y="${(parseFloat(cy) + 3.5).toFixed(1)}" text-anchor="middle" fill="var(--bg-surface)" font-size="9.5" font-weight="800" font-family="monospace" pointer-events="none">${isMulti ? '+' + cluster.items.length : primary.shortId}</text>
+                `;
+
+                if (isTop3 || isFocused) {
+                    const labelText = isMulti
+                        ? `[${cluster.items.map(i => i.shortId).join(',')}] 共${cluster.items.length}議題`
+                        : `${primary.shortId} ${primary.issue}`;
+                    const labelAnchor = (parseFloat(cx) > W - padR - 130) ? "end" : "start";
+                    const labelX = (labelAnchor === "end") ? (parseFloat(cx) - 14) : (parseFloat(cx) + 14);
+                    const labelColor = isFocused ? "var(--primary-light)" : "var(--dot-label-text)";
+
+                    groupHtml += `
+                        <text x="${labelX.toFixed(1)}" y="${(parseFloat(cy) + 4).toFixed(1)}" text-anchor="${labelAnchor}" fill="${labelColor}" font-size="11" font-weight="700" pointer-events="none" style="paint-order: stroke fill; stroke: var(--dot-label-stroke); stroke-width: 3.5px; stroke-linejoin: round;">${escapeHtml(labelText)}</text>
+                    `;
+                }
+
+                groupHtml += `</g>`;
+                svgHtml += groupHtml;
+            });
+
+            svg.innerHTML = svgHtml;
+        },
+
+        _drawTable(tbody, items, countText) {
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            if (countText) countText.textContent = `顯示 ${items.length} 個議題 (依總聲量排序)`;
+
+            items.forEach(it => {
+                const tr = document.createElement('tr');
+                const isFocused = window.focusedIssue && window.focusedIssue.compGroup === it.compGroup && window.focusedIssue.issue === it.issue;
+                tr.className = `matrix-row ${isFocused ? 'active-row' : ''}`;
+                if (isFocused) tr.id = 'matrix-focused-row';
+                tr.onclick = () => toggleIssueFocus(it.compGroup, it.issue);
+                tr.tabIndex = 0;
+                tr.onkeydown = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        toggleIssueFocus(it.compGroup, it.issue);
+                        e.preventDefault();
+                    }
+                };
+
+                const actionBtn = isFocused
+                    ? `<span style="display:inline-block; padding:2px 6px; background:var(--primary); color:var(--primary-text); border-radius:4px; font-size:0.72rem; font-weight:700;">聚焦中</span>`
+                    : `<span style="display:inline-block; padding:2px 6px; background:var(--bg-card); color:var(--text-muted); border-radius:4px; font-size:0.72rem; border:1px solid var(--border-subtle);">點選查證</span>`;
+
+                const posRateTxt = it.isPureNeutral ? '純中立' : `${it.posRate.toFixed(1)}%`;
+
+                tr.innerHTML = `
+                    <td><span class="badge-num" style="background:var(--badge-bg); border:1px solid var(--badge-border); color:var(--primary-light); padding:1px 5px; border-radius:4px; font-family:monospace; font-weight:700;">${it.shortId}</span></td>
+                    <td>${actionBtn}</td>
+                    <td><span style="color:${it.quadColor}; font-weight:700;">●</span> <span style="color:var(--text-main); font-size:0.78rem;">${it.quadrant}</span></td>
+                    <td><span style="display:inline-block;background:var(--badge-bg);padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid var(--border-subtle);color:var(--text-main);">${escapeHtml(it.compName)}</span></td>
+                    <td><span style="font-weight:600; color:var(--text-main);">${escapeHtml(it.issue)}</span></td>
+                    <td style="text-align:right; font-family:monospace; color:var(--pos-green); font-weight:bold;">${posRateTxt}</td>
+                    <td style="text-align:right; font-family:monospace; color:var(--neg-red); font-weight:bold;">${it.negRate.toFixed(1)}%</td>
+                    <td style="text-align:right; font-family:monospace; color:var(--text-main);"><strong>${it.tot}</strong> <span style="color:var(--text-dim); font-size:0.73rem;">(${it.pos}/${it.neu}/${it.neg})</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            setTimeout(() => {
+                const focusedRow = document.getElementById('matrix-focused-row');
+                if (focusedRow) {
+                    const container = focusedRow.closest('.table-wrap');
+                    if (container) {
+                        const rowTop = focusedRow.offsetTop;
+                        const rowHeight = focusedRow.offsetHeight;
+                        const cScrollTop = container.scrollTop;
+                        const cHeight = container.clientHeight;
+                        const headerHeight = 32;
+
+                        const visibleTop = cScrollTop + headerHeight;
+                        const visibleBottom = cScrollTop + cHeight;
+
+                        if (rowTop < visibleTop || (rowTop + rowHeight) > visibleBottom) {
+                            const targetScroll = rowTop - (cHeight / 2) + (rowHeight / 2);
+                            try {
+                                container.scrollTo({ top: targetScroll, behavior: 'smooth' });
+                            } catch (e) {
+                                container.scrollTop = targetScroll;
+                            }
+                        }
+                    }
+                }
+            }, 100);
+        },
+
+        showTooltip(event, clusterIdx) {
+            const cluster = this._clusters[clusterIdx];
+            if (!cluster) return;
+            const tip = document.getElementById('matrixTooltip');
+            if (!tip) return;
+
+            let html = '';
+            if (cluster.items.length > 1) {
+                html += `<div style="color:var(--alert-color); font-weight:700; margin-bottom:6px; border-bottom:1px solid #334155; padding-bottom:4px;">📍 此座標共重疊 ${cluster.items.length} 個議題 (點擊可切換聚焦)</div>`;
+            }
+
+            cluster.items.forEach((item, idx) => {
+                if (idx > 0) html += `<div style="border-top:1px dashed #334155; margin:6px 0; padding-top:6px;"></div>`;
+                html += `
+                    <div style="font-weight:700; color:var(--text-main); margin-bottom:2px;"><span class="badge-num">${item.shortId}</span> ${escapeHtml(item.compName)} ｜ ${escapeHtml(item.issue)}</div>
+                    <div style="color:${item.quadColor}; font-weight:600; font-size:0.75rem; margin-bottom:3px;">分區：${item.quadrant}</div>
+                    <div style="color:var(--text-muted); font-size:0.75rem;">期間總聲量：<strong style="color:var(--text-main); font-family:monospace;">${item.tot}</strong> 則 (正 ${item.pos} / 中 ${item.neu} / 負 ${item.neg})</div>
+                    <div style="color:var(--text-muted); font-size:0.75rem;">正向佔比：<strong style="color:var(--pos-green); font-family:monospace;">${item.posRate.toFixed(1)}%</strong> ｜ 負向佔比：<strong style="color:var(--neg-red); font-family:monospace;">${item.negRate.toFixed(1)}%</strong></div>
+                `;
+            });
+            html += `<div style="color:var(--primary-light); font-size:0.72rem; margin-top:6px;">👉 點擊圓點或下方列表列，查看下方趨勢與 Top 10</div>`;
+
+            tip.innerHTML = html;
+            tip.style.display = 'block';
+
+            const wrap = document.getElementById('matrixCanvasWrap');
+            const rect = wrap.getBoundingClientRect();
+            let left = event.clientX - rect.left + 15;
+            let top = event.clientY - rect.top - 10;
+
+            if (left + 300 > rect.width) left = event.clientX - rect.left - 310;
+            if (top + tip.offsetHeight > rect.height) top = rect.height - tip.offsetHeight - 10;
+
+            tip.style.left = `${Math.max(10, left)}px`;
+            tip.style.top = `${Math.max(10, top)}px`;
+        },
+
+        hideTooltip() {
+            const tip = document.getElementById('matrixTooltip');
+            if (tip) tip.style.display = 'none';
+        },
+
+        onClusterClick(clusterIdx) {
+            const cluster = this._clusters[clusterIdx];
+            if (!cluster || cluster.items.length === 0) return;
+
+            if (cluster.items.length === 1) {
+                const it = cluster.items[0];
+                toggleIssueFocus(it.compGroup, it.issue);
+            } else {
+                const curIdx = cluster.items.findIndex(it => window.focusedIssue && window.focusedIssue.compGroup === it.compGroup && window.focusedIssue.issue === it.issue);
+                const nextItem = cluster.items[(curIdx + 1) % cluster.items.length];
+                window.focusedIssue = { compGroup: nextItem.compGroup, issue: nextItem.issue };
+                if (selectedBrandKey !== nextItem.compGroup) selectedBrandKey = nextItem.compGroup;
+                applyFiltersAndRender();
+            }
+        }
+    };
+
+    function toggleIssueFocus(compGroup, issue) {
+        if (window.focusedIssue && window.focusedIssue.compGroup === compGroup && window.focusedIssue.issue === issue) {
+            clearIssueFocus();
+            return;
+        }
+        window.focusedIssue = { compGroup, issue };
+        if (selectedBrandKey !== compGroup) {
+            selectedBrandKey = compGroup;
+        }
+        applyFiltersAndRender();
+    }
+
+    function clearIssueFocus() {
+        window.focusedIssue = null;
+        applyFiltersAndRender();
+    }
+
+    window.addEventListener('resize', () => {
+        if (window.currentCalcState && window.currentCalcState.metadata) {
+            ChurnRiskModule.render();
+        LongTailModule.render();
+        MatrixModule.render();
+                }
+    });
+
+    MatrixModule.init();
+
+</script>
+</body>
+</html>
